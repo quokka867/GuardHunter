@@ -230,7 +230,8 @@ MemIsHyperProtectedCr0Unsafe(
 
     RetOpcode = 0xC3;
 
-    if (NT_ERROR(pHunterContext->HR_API.pRtlpIcAccessMemory(
+    if (NT_ERROR(
+        pHunterContext->HR_API.pRtlpIcAccessMemory(
         &pExceptionRecord,
         &RetOpcode,
         pOpcodePatch,
@@ -278,11 +279,12 @@ MemFindMemoryPattern(
 /*++
 * Routine Description:
 *
-*     This routine searches for a pattern in the specified memory range.
+*     This routine searches for a pattern in the
+*     specified memory range.
 *
 * Arguments:
 *
-*     pBaseRange   - Supplies the base address of the memory range.
+*     pBaseRange   - Supplies the memory range base.
 *
 *     RangeSize    - Supplies the size of the memory range.
 *
@@ -299,13 +301,11 @@ MemFindMemoryPattern(
 *
 --*/
 {
-    UINT64 PatternLen = strnlen_s(
-        (const char*)pMask,
-        MEM_PATTERN_MAXLEN + 1);
+    UINT64 PatternLen = 0;
 
-    UINT64 FinalRangeLen = (RangeSize - PatternLen);
+    UINT64 FinalRangeLen = 0;
 
-    UINT8 *pCurrentAddress = pBaseRange;
+    UINT8 *pCurrentAddress = NULL;
 
     BOOLEAN MatchFound = FALSE;
 
@@ -318,16 +318,29 @@ MemFindMemoryPattern(
         return HR_ABORTED;
     }
 
-    if (!PatternLen || PatternLen == (MEM_PATTERN_MAXLEN + 1) || 
+    if (HR_ERROR(HrGetAsciiStringLength(
+        pMask,
+        &PatternLen,
+        MEM_PATTERN_MAXLEN + 1))) {
+        DBG_BREAK;
+        return HR_ABORTED;
+    }
+
+    if (!PatternLen || PatternLen == (MEM_PATTERN_MAXLEN + 1) ||
         PatternLen > RangeSize) {
         DBG_BREAK;
         return HR_ABORTED;
     }
 
+    FinalRangeLen = (RangeSize - PatternLen);
+
+    pCurrentAddress = pBaseRange;
+
     for (UINT64 i = 0; i <= FinalRangeLen; i++) {
         MatchFound = TRUE;
         for (UINT64 i2 = 0; i2 < PatternLen; i2++) {
-            if (pMask[i2] == _bx && pCurrentAddress[i2] != pPattern[i2]) {
+            if (pMask[i2] == _bx &&
+                pCurrentAddress[i2] != pPattern[i2]) {
                 MatchFound = FALSE;
                 break;
             }

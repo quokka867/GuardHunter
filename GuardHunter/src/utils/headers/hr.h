@@ -76,3 +76,12 @@ HrCheckCriticalTableIntegrity(
     OUT BOOLEAN *pCheckStatus
 );
 
+extern
+HR_STATUS
+FASTCALL
+HrGetAsciiStringLength(
+    IN  CONST UINT8 *pString,
+    OUT UINT64 *pLength,
+    IN  UINT64 MaxCount
+);
+

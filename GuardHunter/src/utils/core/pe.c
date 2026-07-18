@@ -208,6 +208,8 @@ PeGetImageSectionsRange(
     return HR_SUCCESS;
 }
 
+#define ITEM_NAME_MAXLEN 4096
+
 HR_STATUS
 FASTCALL
 PeFindExportItemCrc32Hash(
@@ -314,8 +316,13 @@ PeFindExportItemCrc32Hash(
 
     for (UINT32 i = 0; i < NoNames; i++) {
         pNameAddress = ((UINT8*)pImageBase + pTableAddressOfNames[i]);
-        NameLength = strnlen_s((const char*)pNameAddress, 4097);
-        if (!NameLength || NameLength == 4097) {
+        if (HR_ERROR(HrGetAsciiStringLength(
+            pNameAddress,
+            &NameLength,
+            ITEM_NAME_MAXLEN + 1))) {
+            DBG_BREAK;
+            return HR_ABORTED;
+        } else if (!NameLength || NameLength == (ITEM_NAME_MAXLEN + 1)) {
             continue;
         }
         if (HR_ERROR(CryCrc32DataHash(
@@ -324,9 +331,8 @@ PeFindExportItemCrc32Hash(
             &NameHash))) {
             DBG_BREAK;
             return HR_ABORTED;
-        }
-        if (ItemNameHash == NameHash) {
-            *pItemAddress = ((UINT8*)pImageBase + 
+        } else if (ItemNameHash == NameHash) {
+            *pItemAddress = ((UINT8*)pImageBase +
                 pTableAddressOfFunctions[pTableAddressOfNameOrdinals[i]]);
             break;
         }

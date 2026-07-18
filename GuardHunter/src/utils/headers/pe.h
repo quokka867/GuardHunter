@@ -1,6 +1,7 @@
 #pragma once
 #include "../../_common/common.h"
 #include "../../mem/headers/mem.h"
+#include "../headers/hr.h"
 #include "../headers/crypto.h"
 
 //

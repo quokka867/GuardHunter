@@ -312,7 +312,7 @@ FltIsPatchGuardDpc(
         (VOID*)pDpc->DeferredRoutine,
         (VOID**)&ImageBase))) {
 #if DBG
-        FilterDetectReason = UnbackedRoutine;
+        FilterDetectReason = NonBackedCode;
 #endif
         goto detected;
     }
@@ -409,7 +409,7 @@ FltIsPatchGuardDpc(
         if (__popcnt64((UINT64)pDpc->DeferredContext) > 16) {
             if (!(IS_CANONICAL_SYSTEM_VA(pDpc->DeferredContext))) {
 #if DBG
-                FilterDetectReason = NoneCanonicalContext;
+                FilterDetectReason = NonCanonicalContext;
 #endif
                 goto detected;
             }
@@ -576,7 +576,7 @@ FltIsPatchGuardTimer2(
         pCallback,
         (VOID**)&ImageBase))) {
 #if DBG
-        FilterDetectReason = UnbackedRoutine;
+        FilterDetectReason = NonBackedCode;
 #endif
         goto detected;
     }
@@ -673,7 +673,7 @@ FltIsPatchGuardTimer2(
         if (__popcnt64((UINT64)pCallbackContext) > 16) {
             if (!(IS_CANONICAL_SYSTEM_VA(pCallbackContext))) {
 #if DBG
-                FilterDetectReason = NoneCanonicalContext;
+                FilterDetectReason = NonCanonicalContext;
 #endif
                 goto detected;
             }
@@ -821,7 +821,7 @@ FltIsPatchGuardApc(
         (VOID*)pApc->pKernelRoutine,
         (VOID**)&ImageBase))) {
 #if DBG
-        FilterDetectReason = UnbackedRoutine;
+        FilterDetectReason = NonBackedCode;
 #endif
         goto detected;
     }
@@ -918,7 +918,7 @@ FltIsPatchGuardApc(
         if (__popcnt64((UINT64)pApc->pSystemArgument1) > 16) {
             if (!(IS_CANONICAL_SYSTEM_VA(pApc->pSystemArgument1))) {
 #if DBG
-                FilterDetectReason = NoneCanonicalContext;
+                FilterDetectReason = NonCanonicalContext;
 #endif
                 goto detected;
             }
@@ -1066,7 +1066,7 @@ FltIsPatchGuardWorkItem(
         (VOID*)pWorkItem->WorkerRoutine,
         (VOID**)&ImageBase))) {
 #if DBG
-        FilterDetectReason = UnbackedRoutine;
+        FilterDetectReason = NonBackedCode;
 #endif
         goto detected;
     }
@@ -1163,7 +1163,7 @@ FltIsPatchGuardWorkItem(
         if (__popcnt64((UINT64)pWorkItem->Parameter) > 16) {
             if (!(IS_CANONICAL_SYSTEM_VA(pWorkItem->Parameter))) {
 #if DBG
-                FilterDetectReason = NoneCanonicalContext;
+                FilterDetectReason = NonCanonicalContext;
 #endif
                 goto detected;
             }
@@ -1307,7 +1307,7 @@ FltIsPatchGuardWaitThread(
         (VOID*)pWaitThreadReturnAddress,
         (VOID**)&ImageBase))) {
 #if DBG
-        FilterDetectReason = UnbackedRoutine;
+        FilterDetectReason = NonBackedCode;
 #endif
         goto detected;
     }

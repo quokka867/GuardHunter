@@ -42,7 +42,7 @@ ENDIF
 ; *
 ; * Arguments:
 ; *
-; *     rcx - Supplies a pointer to the
+; *     Rcx - Supplies a pointer to the
 ; *           HOOK_ASM_STUB_INFO structure.
 ; *
 ; * Return Value:
@@ -148,12 +148,12 @@ HkGetHookAsmStubRangeAsm64 endp
 ; *
 ; * Arguments:
 ; *
-; *     rcx - Supplies the internal bug status.
+; *     Rcx - Supplies the internal bug status.
 ; *
-; *     rdx - Supplies a pointer to the
+; *     Rdx - Supplies a pointer to the
 ; *           current stack high limit.
 ; *
-; *     r8  - Supplies a pointer to the
+; *     R8  - Supplies a pointer to the
 ; *           current stack low limit.
 ; *
 ; * Return Value:
@@ -258,9 +258,9 @@ HkCustomBugCheckAsm64 endp
 ; *
 ; * Arguments:
 ; *
-; *     rcx - Supplies the new RSP.
+; *     Rcx - Supplies the new RSP.
 ; *
-; *     rdx - Supplies a pointer to the
+; *     Rdx - Supplies a pointer to the
 ; *           CONTEXT structure.
 ; *
 ; * Return Value:

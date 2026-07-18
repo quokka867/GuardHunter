@@ -41,10 +41,12 @@ typedef struct _HOOK_CONTEXT {
 (((UINT8)(x)) == 0xE8)
 
 #define IS_RELX_JMP_OPCODE(x) \
-((((UINT8)(x)) == 0xE9) || (((UINT8)(x)) == 0xEB))
+((((UINT8)(x)) == 0xE9) || \
+(((UINT8)(x)) == 0xEB))
 
 #define IS_RELX_JCC_OPCODE(x) \
-(((((UINT16)(x)) & 0xF0FF) == 0x800F) || ((((UINT8)(x)) & 0xF0) == 0x70))
+(((((UINT16)(x)) & 0xF0FF) == 0x800F) || \
+((((UINT8)(x)) & 0xF0) == 0x70))
 
 #define IS_RELX_LOOP_OPCODE(x) \
 ((((UINT8)(x)) & 0xFC) == 0xE0)
@@ -106,8 +108,6 @@ HkInitHookContext(
 
     UINT8 InstructionLength = 0;
 
-    NTSTATUS NtStatus = 0;
-
     if (!pRoutineAddress || !pHookContext || !pHunterContext) {
         DBG_BREAK;
         return HR_ABORTED;
@@ -165,7 +165,7 @@ HkInitHookContext(
             IS_DEC86_OPCODE(Instruction)) {
             InstructionLength = 2;
         } else {    
-            if (NT_ERROR(NtStatus =
+            if (NT_ERROR(
                 pHunterContext->HR_API.pRtlIcParseInstruction(
                     NULL,
                     &TpReadContext,

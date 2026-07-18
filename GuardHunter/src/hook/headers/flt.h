@@ -12,9 +12,9 @@
 
 typedef enum _FILTER_DETECT_REASON {
     Reserved0,
-    UnbackedRoutine,
+    NonBackedCode,
     PgCodePattern,
-    NoneCanonicalContext,
+    NonCanonicalContext,
     InvalidContext,
     RwxContext
 } FILTER_DETECT_REASON;

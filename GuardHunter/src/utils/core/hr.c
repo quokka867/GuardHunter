@@ -424,3 +424,47 @@ HrCheckCriticalTableIntegrity(
     return HR_SUCCESS;
 }
 
+HR_STATUS
+FASTCALL
+HrGetAsciiStringLength(
+    IN  CONST UINT8 *pString,
+    OUT UINT64 *pLength,
+    IN  UINT64 MaxCount
+)
+/*++
+* Routine Description:
+*
+*     This routine computes the length of the
+*     specified ASCII string.
+*
+* Arguments:
+*
+*     pString  - Supplies a pointer to the
+*                string.
+*
+*     pLength  - Supplies a pointer to a variable that
+*                receives the string length.
+* 
+*     MaxCount - Supplies the maximum count.
+*
+* Return Value:
+*
+*     Internal status.
+*
+--*/
+{
+    UINT64 StrLength = 0;
+
+    if (!pString || !pLength) {
+        return HR_ABORTED;
+    }
+
+    while ((StrLength < MaxCount) && pString[StrLength]) {
+        StrLength++;
+    }
+
+    *pLength = StrLength;
+    
+    return HR_SUCCESS;
+}
+

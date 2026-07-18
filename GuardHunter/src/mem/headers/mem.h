@@ -1,6 +1,7 @@
 #pragma once
 #include "../../_common/common.h"
 #include "../../init/headers/init.h"
+#include "../../utils/headers/hr.h"
 
 //
 // Declarations of items from *mem.c*.
