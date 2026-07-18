@@ -42,8 +42,8 @@ ENDIF
 ; *
 ; * Arguments:
 ; *
-; *     pHookAsmStubInfo - Supplies a pointer to the
-; *                        HOOK_ASM_STUB_INFO structure.
+; *     rcx - Supplies a pointer to the
+; *           HOOK_ASM_STUB_INFO structure.
 ; *
 ; * Return Value:
 ; *
@@ -58,11 +58,11 @@ HkGetHookAsmStubRangeAsm64 proc
         mov     eax,HR_ABORTED
         jmp     exit
 success:
-        lea     rax,[start_stub]
+        lea     rax,[stub_base]
 
         mov     qword ptr [rcx],rax
 
-        lea     rdx,[end_stub]
+        lea     rdx,[stub_end]
         sub     rdx,rax
         mov     word ptr [rcx + 8],dx
 
@@ -84,7 +84,7 @@ success:
         mov     eax,HR_SUCCESS
 exit:
         ret
-start_stub:
+stub_base:
         push    rax
         mov     rax,rsp
         and     rsp,0FFFFFFFFFFFFFFF0h
@@ -133,7 +133,7 @@ hook_routine_ptr:
         pop     rax
         mov     rsp,rax
         pop     rax
-end_stub:
+stub_end:
         nop
 ;       jmp     qword ptr [rip]
 ;       db 0AAh 0AAh 0AAh 0AAh 0AAh 0AAh 0AAh 0AAh
@@ -148,13 +148,13 @@ HkGetHookAsmStubRangeAsm64 endp
 ; *
 ; * Arguments:
 ; *
-; *     InternalBugStatus - Supplies the internal bug status.
+; *     rcx - Supplies the internal bug status.
 ; *
-; *     pStackHighLimit   - Supplies a pointer to the
-; *                         current stack high limit.
+; *     rdx - Supplies a pointer to the
+; *           current stack high limit.
 ; *
-; *     pStackLowLimit    - Supplies a pointer to the
-; *                         current stack low limit.
+; *     r8  - Supplies a pointer to the
+; *           current stack low limit.
 ; *
 ; * Return Value:
 ; *
@@ -258,10 +258,10 @@ HkCustomBugCheckAsm64 endp
 ; *
 ; * Arguments:
 ; *
-; *     NewRsp   - Supplies the new RSP.
+; *     rcx - Supplies the new RSP.
 ; *
-; *     pContext - Supplies a pointer to the
-; *                CONTEXT structure.
+; *     rdx - Supplies a pointer to the
+; *           CONTEXT structure.
 ; *
 ; * Return Value:
 ; *
