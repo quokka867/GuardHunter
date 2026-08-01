@@ -1067,7 +1067,14 @@ InitHunterContext(
             pSelectedItem))) {
             DBG_BREAK;
             goto aborted;
-        } else if (!(*pSelectedItem)){
+        } else if (!(*pSelectedItem)) {
+            DbgLog(DBG_WARNING_PREFIX,
+                   "Primary pattern not found.\n");
+            DbgLog(DBG_WARNING_PREFIX,
+                   "Pattern ID: 0x%I32X\n",
+                   CurrentPatternId);
+            DbgLog(DBG_WARNING_PREFIX,
+                   "Switch to searching for fallback patterns...\n");
             for (UINT8 i2 = 0;
                 i2 < NtosPatternData.BodyFallbackPatternCount; i2++) {
                 if (HR_ERROR(PeFindSectionMemoryPattern(
@@ -1079,15 +1086,21 @@ InitHunterContext(
                     pSelectedItem))) {
                     DBG_BREAK;
                     goto aborted;
-                }
-                if (*pSelectedItem) {
+                } else if (*pSelectedItem) {
+                    DbgLog(DBG_SUCCESS_PREFIX,
+                           "Fallback pattern found.\n");
+                    DbgLog(DBG_SUCCESS_PREFIX,
+                           "Fallback pattern IDX: 0x%02X\n",
+                           i2);
                     break;
                 }
             }
-        }
-        if (!(*pSelectedItem)) {
-            DBG_BREAK;
-            goto aborted;
+            if (!(*pSelectedItem)) {
+                DbgLog(DBG_ABORTED_PREFIX,
+                       "Fallback pattern not found.\n");
+                DBG_BREAK;
+                goto aborted;
+            }
         }
         switch (CurrentPatternId) {
         case NTOS_PATTERN_DATA_XHALTIMERWATCHDOGSTOPCUSTOM_ID:

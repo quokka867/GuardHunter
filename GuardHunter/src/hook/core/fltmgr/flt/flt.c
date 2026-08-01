@@ -535,7 +535,7 @@ FltIsPatchGuardTimer2(
                 (UINT64)pTimer2 ^ _rotl64(
                     KiWaitNever ^ (UINT64)pTimer2->pCallback,
                     (UINT8)KiWaitNever)));
-    VOID* pCallbackContext =
+    VOID *pCallbackContext =
         (VOID*)(KiWaitAlways ^
             _byteswap_uint64(
                 (UINT64)pTimer2 ^ _rotl64(

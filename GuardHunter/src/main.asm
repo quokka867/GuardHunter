@@ -34,7 +34,7 @@ _TEXT segment PARA 'CODE'
 ; *
 ; * Return Value:
 ; *
-; *     Pointer to the hunter export table, or NULL.
+; *     Pointer to the hunter export table.
 ; *
 ; ***
 public HrStart

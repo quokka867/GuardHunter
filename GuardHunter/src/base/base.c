@@ -133,7 +133,7 @@ BsMain (
 *
 * Return Value:
 *
-*     Pointer to the hunter export table, or NULL.
+*     Pointer to the hunter export table.
 *
 --*/
 {
@@ -148,7 +148,7 @@ BsMain (
 
     BOOLEAN IsHyperProtectedCr0 = FALSE;
 
-    const UINT8 RoutineExecuteFix[] = {
+    CONST UINT8 RoutineExecuteFix[] = {
         //
         // mov al,al.
         //
@@ -683,12 +683,12 @@ BsMain (
             (UINT64)pHunterExportTable->XorKey32);
 
     pHunterExportTable->FLTMGR.API.pFltMgrRegisterFilterCallback =
-        (HR_STATUS(FASTCALL*) (UINT32, FILTER_CALLBACK*))
+        (HR_STATUS (FASTCALL*) (UINT32, FILTER_CALLBACK*))
         ((UINT64)&FltMgrRegisterFilterCallback ^
             (UINT64)pHunterExportTable->XorKey32);
 
     pHunterExportTable->FLTMGR.API.pFltMgrDeregisterFilterCallback =
-    (HR_STATUS(FASTCALL*) (UINT32, UINT32, BOOLEAN*))
+    (HR_STATUS (FASTCALL*) (UINT32, UINT32, BOOLEAN*))
         ((UINT64)&FltMgrDeregisterFilterCallback ^
             (UINT64)pHunterExportTable->XorKey32);
 
@@ -727,13 +727,15 @@ aborted:
                 pHunterContext->HR_API.pMmFreeIndependentPages;
             RtlSecureZeroMemory(
                 HunterContextDesc.pAllocBase,
-                HunterContextDesc.LowPaddingSize +
-                HunterContextDesc.HighPaddingSize);
+                (HunterContextDesc.LowPaddingSize +
+                sizeof(HR_CONTEXT) +
+                HunterContextDesc.HighPaddingSize));
             pMmFreeIndependentPages(
                 HunterContextDesc.pAllocBase,
                 REQUIRED_NUMBER_OF_PAGES(
-                HunterContextDesc.LowPaddingSize +
-                HunterContextDesc.HighPaddingSize)
+                (HunterContextDesc.LowPaddingSize +
+                sizeof(HR_CONTEXT) +
+                HunterContextDesc.HighPaddingSize))
                 << PAGE_SHIFT);
             if (pFilterCallback) {
                 RtlSecureZeroMemory(

@@ -1,6 +1,6 @@
 # GuardHunter - Defeating PatchGuard in RT Phase
 
-GuardHunter is an NT kernel module that serves as a highly effective solution for neutralizing PatchGuard during the RT phase, and can be used as a comprehensive offensive/defensive framework for NTOS.
+GuardHunter is an NT kernel module that serves as a highly effective solution for neutralizing PatchGuard during the RT phase, and can be used as a comprehensive offensive / defensive framework for NTOS.
 
 ## Requirements
 
@@ -14,7 +14,7 @@ GuardHunter is an NT kernel module that serves as a highly effective solution fo
 
 The module was successfully tested on Windows builds:
 
-- 26200.8737
+- 26200.8737 / 26200.8973
 
 ## Test Results
 
