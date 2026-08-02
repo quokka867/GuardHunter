@@ -99,9 +99,10 @@ HrInitCriticalTable(
 
     CRITICAL_TABLE *pCriticalTable = NULL;
     MMPTE_HARDWARE *pCriticalTablePte = NULL;
+    MMPFN *pCriticalTablePfn = NULL;
 
-    BOOLEAN IsAborted = TRUE;
     BOOLEAN IsLocked = FALSE;
+    BOOLEAN IsAborted = TRUE;
 
     if (!pHunterContext) {
         DBG_BREAK;
@@ -144,8 +145,8 @@ HrInitCriticalTable(
     }
 
     pCriticalTable =
-        (CRITICAL_TABLE*)
-        (((UINT8*)pTableLowPaddingBase) + TableLowPaddingSize);
+        (CRITICAL_TABLE*)(((UINT8*)pTableLowPaddingBase) +
+            TableLowPaddingSize);
 
     pTableHighPaddingBase = (UINT32*)(pCriticalTable + 1);
 
@@ -215,15 +216,28 @@ HrInitCriticalTable(
     }
 
     if (HR_ERROR(MemGetPteAddressSafe(
-        pTableLowPaddingBase,
+        pCriticalTable,
         &pCriticalTablePte,
         pHunterContext))) {
         DBG_BREAK;
         goto aborted;
-    } else if (!pCriticalTablePte) {
+    } else if (!pCriticalTablePte) {   
         DBG_BREAK;
         goto aborted;
     }
+
+    pCriticalTablePfn =
+        (MMPFN*)(pHunterContext->NTOS_ITEMS.PfnDatabase +
+            (pCriticalTablePte->PageFrameNumber *
+                sizeof(MMPFN)));
+
+    //
+    // This prevents stealing the PFN of the allocated page
+    // without using dirty tricks,
+    // such as calling the MmRemovePhysicalMemory.
+    //
+    _InterlockedIncrement16(
+        (volatile INT16*)&pCriticalTablePfn->u3.ReferenceCount);
 
     g_pCriticalTable =
         (CRITICAL_TABLE*)QUICK_XOR64(pCriticalTable);

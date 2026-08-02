@@ -1330,6 +1330,9 @@ InitHunterContext(
 
     pHunterContext->HR_API.pKdCopyDataBlock(pKdDataBlock);
 
+    pHunterContext->NTOS_ITEMS.PfnDatabase =
+        *((UINT64*)pKdDataBlock->MmPfnDatabase);
+
     AccPteBase = pKdDataBlock->PteBase;
     SelfReferencePml4eIdx = 
         (AccPteBase >> (9 * (MMU_PAGING_LEVELS - 1))) & 0x1FF000;

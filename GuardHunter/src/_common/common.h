@@ -333,9 +333,12 @@ typedef struct _KTIMER2 {
     };
     UINT64 DueTime[2];
     INT64 Period;
-    VOID (FASTCALL *pCallback) (VOID *pTimer2, VOID *pCallbackContext);
+    VOID (FASTCALL *pCallback) (
+        VOID *pTimer2,
+        VOID *pCallbackContext);
     VOID *pCallbackContext;
-    VOID (FASTCALL *pDisableCallback) (VOID *pDisableContext);
+    VOID (FASTCALL *pDisableCallback) (
+        VOID *pDisableContext);
     VOID *pDisableContext;
     UINT8 AbsoluteSystemTime;
     union {
@@ -402,7 +405,7 @@ typedef struct _KAPC2 {
                 VOID *pSystemArgument1,
                 VOID *pSystemArgument2);
         };
-        VOID* pReserved[3];
+        VOID *pReserved[3];
     };
     VOID *pNormalContext;
     VOID *pSystemArgument1;
@@ -455,6 +458,169 @@ typedef struct _MMPTE_HARDWARE {
     UINT64 SoftwareWsIndex : 11;
     UINT64 NoExecute : 1;
 } MMPTE_HARDWARE;
+
+typedef struct _MI_ACTIVE_PFN {
+    union {
+        struct {
+            UINT64 Tradable : 1;
+            UINT64 NonPagedBuddy : 43;
+            UINT64 Spare : 20;
+        } Leaf;
+        struct {
+            UINT64 Tradable : 1;
+            UINT64 NonPagedBuddy : 31;
+            UINT64 UsedPageTableEntries : 10;
+            UINT64 WsleAge : 3;
+            UINT64 OldestWsleLeafEntries : 10;
+            UINT64 OldestWsleLeafAge : 3;
+            UINT64 Spare : 6;
+        } PageTable;
+        UINT64 EntireActiveField;
+    };
+} MI_ACTIVE_PFN;
+
+typedef struct _MIPFNFLINK {
+    union {
+        SLIST_ENTRY *pNextSlistPfn;
+        VOID *pNext;
+        struct {
+            UINT64 Flink : 40;
+            UINT64 NodeFlinkLow : 24;
+        };
+        UINT64 EntireField;
+        MI_ACTIVE_PFN Active;
+    };
+} MIPFNFLINK;
+
+typedef struct _MIPFNBLINK {
+    union {
+        struct {
+            UINT64 Blink : 40;
+            UINT64 NodeBlinkLow : 19;
+            UINT64 TbFlushStamp : 3;
+            UINT64 PageBlinkDeleteBit : 1;
+            UINT64 PageBlinkLockBit : 1;
+        };
+        struct {
+            UINT64 ShareCount : 62;
+            UINT64 PageShareCountDeleteBit : 1;
+            UINT64 PageShareCountLockBit : 1;
+        };
+        INT64 EntireField;
+        struct {
+            UINT64 LockNotUsed : 62;
+            UINT64 DeleteBit : 1;
+            UINT64 LockBit : 1;
+        };
+    };
+} MIPFNBLINK;
+
+typedef struct _MMPFNENTRY1 {
+    UINT8 PageLocation : 3;
+    UINT8 WriteInProgress : 1;
+    UINT8 Modified : 1;
+    UINT8 ReadInProgress : 1;
+    UINT8 CacheAttribute : 2;
+} MMPFNENTRY1;
+
+typedef struct _MMPFNENTRY3 {
+    UINT8 Priority : 3;
+    UINT8 OnProtectedStandby : 1;
+    UINT8 InPageError : 1;
+    UINT8 SystemChargedPage : 1;
+    UINT8 RemovalRequested : 1;
+    UINT8 ParityError : 1;
+} MMPFNENTRY3;
+
+typedef struct _MI_PFN_FLAGS {
+    union {
+        struct {
+            UINT16 ReferenceCount;
+            UINT8 PageLocation : 3;
+            UINT8 WriteInProgress : 1;
+            UINT8 Modified : 1;
+            UINT8 ReadInProgress : 1;
+            UINT8 CacheAttribute : 2;
+            UINT8 Priority : 3;
+            UINT8 OnProtectedStandby : 1;
+            UINT8 InPageError : 1;
+            UINT8 SystemChargedPage : 1;
+            UINT8 RemovalRequested : 1;
+            UINT8 ParityError : 1;
+        };
+        UINT32 EntireField;
+    };
+} MI_PFN_FLAGS;
+
+typedef struct _MI_PFN_FLAGS5 {
+    union {
+        UINT32 EntireField;
+        struct {
+            UINT32 NodeBlinkHigh : 21;
+            UINT32 NodeFlinkMiddle : 11;
+        } StandbyList;
+        struct {
+            UINT8 ModifiedListBucketIndex : 4;
+        } MappedPageList;
+        struct {
+            UINT32 PageTableBlinkLow : 16;
+            UINT32 PageTableBuddyHigh : 10;
+            UINT32 PageTableLinked : 1;
+            UINT32 AnchorLargePageSize : 2;
+            UINT32 Spare1 : 3;
+        } Active;
+    };
+} MI_PFN_FLAGS5;
+
+typedef struct _MI_PFN_FLAGS4 {
+    union {
+        struct {
+            UINT64 PteFrame : 40;
+            UINT64 ResidentPage : 1;
+            UINT64 ResidentPageContainsBadPages : 1;
+            UINT64 Unused1 : 1;
+            UINT64 Partition : 10;
+            UINT64 FileOnly : 1;
+            UINT64 PfnExists : 1;
+            UINT64 NodeFlinkHigh : 5;
+            UINT64 PageIdentity : 3;
+            UINT64 PrototypePte : 1;
+        };
+        UINT64 EntireField;
+    };
+} MI_PFN_FLAGS4;
+
+typedef struct _MMPFN {
+    union {
+        LIST_ENTRY ListEntry;
+        RTL_BALANCED_NODE TreeNode;
+        struct {
+            MIPFNFLINK u1;
+            union {
+                MMPTE_HARDWARE *pPteAddress;
+                UINT64 PteLong;
+            };
+            MMPTE_HARDWARE OriginalPte;
+        };
+    };
+    volatile MIPFNBLINK u2;
+    union {
+        struct {
+            UINT16 ReferenceCount;
+            MMPFNENTRY1 e1;
+        };
+        struct {
+            struct {
+                UINT16 ReferenceCount;
+            } e2;
+            UINT8 MmPfnPad0[1];
+            MMPFNENTRY3 e3;
+        };
+        volatile MI_PFN_FLAGS e4;
+    } u3;
+    MI_PFN_FLAGS5 u5;
+    MI_PFN_FLAGS4 u4;
+} MMPFN;
 
 //
 // This is a reconstructed type definition,
@@ -927,6 +1093,8 @@ typedef struct _HR_CONTEXT {
         VOID *pKiErrata671Present;
     } NTOS_ROUTINES;
     struct {
+        UINT64 PfnDatabase;
+
         UINT64 PteBases[MMU_PAGING_LEVELS];
 
         UINT64 *pKiWaitNever;
