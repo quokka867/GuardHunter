@@ -305,7 +305,7 @@ HkInstallRoutineHookIpi(
     if (!_interlockedbittestandset(
         (volatile LONG*)&pInstallHookContext->CoreSyncLock,
         0)) {
-        if (HR_ERROR(HkGetHookAsmStubRangeAsm64(&HookAsmStubInfo))) {
+        if (HR_ERROR(HkGetHookAsmStubInfoAsm64(&HookAsmStubInfo))) {
             _InterlockedExchange(
                 (volatile LONG*)&pInstallHookContext->Status,
                 HR_ABORTED);
@@ -402,7 +402,7 @@ HkInstallRoutineHook(
 
     UINT8 TrampolineReturnBody[14] = {
         0xFF, 0x25, 0x00, 0x00, 0x00, 0x00,
-        0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+        0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA
     };
 
     BOOLEAN IsAborted = TRUE;
@@ -421,7 +421,7 @@ HkInstallRoutineHook(
         goto aborted;
     }
 
-    if (HR_ERROR(HkGetHookAsmStubRangeAsm64(&HookAsmStubInfo))) {
+    if (HR_ERROR(HkGetHookAsmStubInfoAsm64(&HookAsmStubInfo))) {
         DBG_BREAK;
         goto aborted;
     }

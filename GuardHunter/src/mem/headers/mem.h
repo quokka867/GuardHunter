@@ -1,7 +1,6 @@
 #pragma once
 #include "../../_common/common.h"
 #include "../../init/headers/init.h"
-#include "../../utils/headers/hr.h"
 
 //
 // Declarations of items from *mem.c*.
@@ -42,6 +41,15 @@ MemFindMemoryPattern(
     IN  CONST UINT8 *pPattern,
     IN  CONST UINT8 *pMask,
     OUT VOID **pPatternBase
+);
+
+extern
+HR_STATUS
+FASTCALL
+MemGetAsciiStringLength(
+    IN  CONST UINT8 *pString,
+    OUT UINT64 *pLength,
+    IN  UINT64 MaxCount
 );
 
 extern

@@ -9,7 +9,7 @@ if 0
 *
 * Abstract:
 *
-*     This module contains ASM64 routines for hooks.
+*     This module contains ASM64 routines for hook-module.
 *
 * Author:
 * 
@@ -50,14 +50,16 @@ ENDIF
 ; *     Internal status.
 ; *
 ; ***
-public HkGetHookAsmStubRangeAsm64
-HkGetHookAsmStubRangeAsm64 proc
+public HkGetHookAsmStubInfoAsm64
+HkGetHookAsmStubInfoAsm64 proc
         test    rcx,rcx
         jnz     short success
 
         mov     eax,HR_ABORTED
-        jmp     exit
+        jmp     short exit
+
 success:
+
         lea     rax,[stub_base]
 
         mov     qword ptr [rcx],rax
@@ -82,9 +84,13 @@ success:
         mov     word ptr [rcx + 14],dx
 
         mov     eax,HR_SUCCESS
+
 exit:
+
         ret
+
 stub_base:
+
         push    rax
         mov     rax,rsp
         and     rsp,0FFFFFFFFFFFFFFF0h
@@ -103,13 +109,19 @@ stub_base:
         push    rax
         add     qword ptr [rsp],8
         sub     rsp,16
+
 trampoline_base_ptr:
+
         mov     rax,0AAAAAAAAAAAAAAAAh 
         mov     qword ptr [rsp + 8],rax
+
 hunter_context_ptr:
+
         mov     rax,0AAAAAAAAAAAAAAAAh 
         mov     qword ptr [rsp],rax
+
 hook_routine_ptr:
+
         mov     rax,0AAAAAAAAAAAAAAAAh 
         mov     rcx,rsp
         sub     rsp,32
@@ -133,11 +145,13 @@ hook_routine_ptr:
         pop     rax
         mov     rsp,rax
         pop     rax
+
 stub_end:
+
         nop
 ;       jmp     qword ptr [rip]
-;       db 0AAh 0AAh 0AAh 0AAh 0AAh 0AAh 0AAh 0AAh
-HkGetHookAsmStubRangeAsm64 endp
+;       db 0AAh, 0AAh, 0AAh, 0AAh, 0AAh, 0AAh, 0AAh, 0AAh
+HkGetHookAsmStubInfoAsm64 endp
 
 ; ***
 ; * Routine Description:

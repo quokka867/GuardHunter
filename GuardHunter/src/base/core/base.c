@@ -13,7 +13,7 @@
 *
 --*/
 
-#include "headers/base.h"
+#include "../headers/base.h"
 
 //
 // Filter.
@@ -150,17 +150,17 @@ BsMain (
 
     CONST UINT8 RoutineExecuteFix[] = {
         //
-        // mov al,al.
+        // mov al,al
         //
         0x88, 0xC0,
 
         //
-        // nop qword ptr [0xbee * 0xbee].
+        // nop qword ptr [0xbee * 0xbee]
         //
         0x48, 0x0F, 0x1F, 0x04, 0x25, 0x44, 0x51, 0x8E, 0x00,
 
         //
-        // ret.
+        // ret
         //
         0xC3
     };
@@ -223,9 +223,13 @@ BsMain (
         pHunterContext))) {
         DbgLog(DBG_ABORTED_PREFIX
                "CR0 hyper-protection check failed.\n");
+        DBG_BREAK;
+        goto aborted;
     } else if (IsHyperProtectedCr0) {
         DbgLog(DBG_ABORTED_PREFIX
                "CR0 is hyper-protected via VMCB/VMCS bitmask.\n");
+        DBG_BREAK;
+        goto aborted;
     } 
 
     DbgLog(DBG_SUCCESS_PREFIX
@@ -240,17 +244,17 @@ BsMain (
     }
 
     DbgLog(DBG_SUCCESS_PREFIX
-        "Module PE32+ headers truncated successfully.\n");
+           "Module PE32+ headers truncated successfully.\n");
 
     if (HR_ERROR(HrInitCriticalTable(pHunterContext))) {
         DbgLog(DBG_ABORTED_PREFIX
-               "Critical table initialization failed.\n");
+               "CriticalTable initialization failed.\n");
         DBG_BREAK;
         goto aborted;
     }
 
     DbgLog(DBG_SUCCESS_PREFIX
-           "Critical table initialized successfully.\n");
+           "CriticalTable initialized successfully.\n");
  
     FilterTypeSelectorId = FILTER_TYPE_SELECTOR_BASE_ID;
 
@@ -291,13 +295,13 @@ BsMain (
             NULL,
             0))) {
         DbgLog(DBG_ABORTED_PREFIX
-               "Filter callbacks page allocation failed.\n");
+               "Filter callbacks allocation failed.\n");
         DBG_BREAK;
         goto aborted;
     }
 
     DbgLog(DBG_SUCCESS_PREFIX
-           "Filter callbacks page allocated successfully.\n");
+           "Filter callbacks allocated successfully.\n");
 
     BsMainFilterCallbackId = BS_MAIN_FILTER_CALLBACK_BASE_ID;
 
@@ -655,63 +659,20 @@ BsMain (
         }
     }
 
-    if (!(pHunterExportTable =
-        (HR_EXPORT_TABLE*)
-        pHunterContext->HR_API.pMmAllocateIndependentPagesEx(
-            PAGE_SIZE,
-            (UINT32)-1,
-            NULL,
-            0))) {
+    if (HR_ERROR(HrInitHunterExportTable(
+        pHunterContext,
+        &pHunterExportTable))) {
         DbgLog(DBG_ABORTED_PREFIX
-               "Export table page allocation failed.\n");
+               "ExportTable initialization failed.\n");
         DBG_BREAK;
         goto aborted;
     }
 
     DbgLog(DBG_SUCCESS_PREFIX
-           "Export table page allocated successfully.\n");
+           "ExportTable initialized successfully.\n");
+
     DbgLog(DBG_SUCCESS_PREFIX
-           "Export table: 0x%I64X\n",
-           pHunterExportTable);
-
-    pHunterExportTable->XorKey32 =
-        (UINT32)__rdtsc();
-
-    pHunterExportTable->FLTMGR.API.pFltMgrInitFilterCallback =
-        (HR_STATUS (FASTCALL*) (FILTER_CALLBACK*, UINT32*, VOID*, UINT64))
-        ((UINT64)&FltMgrInitFilterCallback ^
-            (UINT64)pHunterExportTable->XorKey32);
-
-    pHunterExportTable->FLTMGR.API.pFltMgrRegisterFilterCallback =
-        (HR_STATUS (FASTCALL*) (UINT32, FILTER_CALLBACK*))
-        ((UINT64)&FltMgrRegisterFilterCallback ^
-            (UINT64)pHunterExportTable->XorKey32);
-
-    pHunterExportTable->FLTMGR.API.pFltMgrDeregisterFilterCallback =
-    (HR_STATUS (FASTCALL*) (UINT32, UINT32, BOOLEAN*))
-        ((UINT64)&FltMgrDeregisterFilterCallback ^
-            (UINT64)pHunterExportTable->XorKey32);
-
-    pHunterExportTable->FLTMGR.DATA.DpcFilterTypeId =
-        (g_FltMgrDpcFilterTypeId ^ pHunterExportTable->XorKey32);
-
-    pHunterExportTable->FLTMGR.DATA.TimerFilterTypeId =
-        (g_FltMgrTimerFilterTypeId ^ pHunterExportTable->XorKey32);
-
-    pHunterExportTable->FLTMGR.DATA.Timer2FilterTypeId =
-        (g_FltMgrTimer2FilterTypeId ^ pHunterExportTable->XorKey32);
-
-    pHunterExportTable->FLTMGR.DATA.ApcFilterTypeId =
-        (g_FltMgrApcFilterTypeId ^ pHunterExportTable->XorKey32);
-
-    pHunterExportTable->FLTMGR.DATA.WorkItemFilterTypeId =
-        (g_FltMgrWorkItemFilterTypeId ^ pHunterExportTable->XorKey32);
-
-    pHunterExportTable->FLTMGR.DATA.WaitThreadFilterTypeId =
-        (g_FltMgrWaitThreadFilterTypeId ^ pHunterExportTable->XorKey32);
-
-    pHunterExportTable->XorKey32 =
-        _byteswap_ulong(pHunterExportTable->XorKey32);
+           "ExportTable: 0x%I64X\n", pHunterExportTable);
 
     IsAborted = FALSE;
 

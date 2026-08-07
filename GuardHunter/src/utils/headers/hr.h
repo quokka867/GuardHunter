@@ -1,13 +1,48 @@
 #pragma once
 #include "../../_common/common.h"
+#include "../../hook/headers/fltmgr.h"
 #include "../../mem/headers/mem.h"
 #include "../../utils/headers/crypto.h"
+#include "hrasm.h"
 
 //
 // Declarations of items from *hr.c*.
 //
 
 EXTERN_C IMAGE_DOS_HEADER __ImageBase;
+
+#define DECRYPT_ASM_STUB_MAXSIZE 256
+
+typedef struct _HR_EXPORT_TABLE {
+    UINT8 DecryptAsmStub[DECRYPT_ASM_STUB_MAXSIZE];
+    struct {
+        struct {
+            HR_STATUS (FASTCALL *pFltMgrInitFilterCallback) (
+                OUT FILTER_CALLBACK *pFilterCallback,
+                OUT UINT32 *pCallbackId,
+                IN  VOID *pCallbackRoutine,
+                IN  UINT64 CallbackContext
+                );
+            HR_STATUS (FASTCALL *pFltMgrRegisterFilterCallback) (
+                IN UINT32 TypeId,
+                IN FILTER_CALLBACK *pFilterCallback
+                );
+            HR_STATUS (FASTCALL *pFltMgrDeregisterFilterCallback) (
+                IN  UINT32 TypeId,
+                IN  UINT32 CallbackId,
+                OUT BOOLEAN *pCallbackFound
+                );
+        } API;
+        struct {
+            UINT32 DpcFilterTypeId;
+            UINT32 TimerFilterTypeId;
+            UINT32 Timer2FilterTypeId;
+            UINT32 ApcFilterTypeId;
+            UINT32 WorkItemFilterTypeId;
+            UINT32 WaitThreadFilterTypeId;
+        } DATA;
+    } FLTMGR;
+} HR_EXPORT_TABLE;
 
 typedef struct _CRITICAL_TABLE {
     UINT32 TableHash32;
@@ -56,6 +91,14 @@ HrCheckHunterContextIntegrity(
 extern
 HR_STATUS
 FASTCALL
+HrInitHunterExportTable(
+    IN  HR_CONTEXT *pHunterContext,
+    OUT HR_EXPORT_TABLE **pHunterExportTable
+);
+
+extern
+HR_STATUS
+FASTCALL
 HrInitCriticalTable(
     IN  HR_CONTEXT *pHunterContext
 );
@@ -74,14 +117,5 @@ FASTCALL
 HrCheckCriticalTableIntegrity(
     IN  CRITICAL_TABLE *pCriticalTable,
     OUT BOOLEAN *pCheckStatus
-);
-
-extern
-HR_STATUS
-FASTCALL
-HrGetAsciiStringLength(
-    IN  CONST UINT8 *pString,
-    OUT UINT64 *pLength,
-    IN  UINT64 MaxCount
 );
 

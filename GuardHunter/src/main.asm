@@ -7,7 +7,7 @@ if 0
 *
 * Abstract:
 *
-*     This module contains the image-module entry point.
+*     This module contains the image entry point.
 *
 * Author:
 * 

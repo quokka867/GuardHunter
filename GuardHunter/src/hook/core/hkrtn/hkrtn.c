@@ -1179,7 +1179,7 @@ HkKiCustomRecurseRoutineX(
            "An attempt to recursively invoke "
            "KiCustomRecurseRoutineX has been detected.\n");
     DbgLog(DBG_WARNING_PREFIX
-           "Longjmp partial emulation RIP: 0x%I64X\n",
+           "Execution context rollback RIP: 0x%I64X\n",
            VirtualContext.Rip);
 
     HkSetRspSafeAsm64(

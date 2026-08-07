@@ -62,6 +62,216 @@ HrCheckHunterContextIntegrity(
     return HR_SUCCESS;
 }
 
+HR_STATUS
+FASTCALL
+HrInitHunterExportTable(
+    IN  HR_CONTEXT *pHunterContext,
+    OUT HR_EXPORT_TABLE **pHunterExportTable
+)
+/*++
+* Routine Description:
+*
+*     This routine initializes
+*     the hunter export table.
+*
+* Arguments:
+*
+*     pHunterContext     - Supplies a pointer to the
+*                          HR_CONTEXT structure.
+* 
+*     pHunterExportTable - Supplies a pointer to the
+*                          HR_EXPORT_TABLE structure.
+*
+* Return Value:
+*
+*     Internal status.
+*
+--*/
+{
+    UINT32 Seed = 0;
+
+    UINT16 TableLowPaddingSize = 0;
+    UINT16 TableHighPaddingSize = 0;
+    UINT32 *pTableLowPaddingBase = NULL;
+    UINT32 *pTableHighPaddingBase = NULL;
+
+    UINT64 ExportTableDataBase = 0;
+    UINT64 ExportTableDataEnd = 0;
+    UINT16 ExportTableDataQwordCount = 0;
+    UINT64 ExportTableDataKey = 0;
+    DECRYPT_ASM_STUB_INFO DecryptAsmStubInfo;
+    UINT8 StubLowPaddingSize = 0;
+
+    HR_EXPORT_TABLE *pHrExportTable = NULL;
+
+    BOOLEAN IsAborted = TRUE;
+
+    if (!pHunterContext || !pHunterExportTable) {
+        DBG_BREAK;
+        goto aborted;
+    }
+
+    TableLowPaddingSize =
+        (UINT16)pHunterContext->HR_API.pRtlRandomEx(&Seed);
+    TableHighPaddingSize =
+        (UINT16)pHunterContext->HR_API.pRtlRandomEx(&Seed);
+
+    TableLowPaddingSize =
+        ((TableLowPaddingSize & 0x3FF) + 0x401) & ~0x0F;
+    TableHighPaddingSize =
+        ((TableHighPaddingSize & 0x3FF) + 0x401) & ~0x0F;
+
+    if (!(pTableLowPaddingBase =
+        (UINT32*)
+        pHunterContext->HR_API.pMmAllocateIndependentPagesEx(
+            REQUIRED_NUMBER_OF_PAGES(
+            (TableLowPaddingSize +
+            sizeof(HR_EXPORT_TABLE) +
+            TableHighPaddingSize))
+            << PAGE_SHIFT,
+            (UINT32)-1,
+            NULL,
+            0))) {
+        DBG_BREAK;
+        goto aborted;    
+    }
+
+    pHrExportTable =
+        (HR_EXPORT_TABLE*)(((UINT8*)pTableLowPaddingBase) +
+            TableLowPaddingSize);
+
+    pTableHighPaddingBase = (UINT32*)(pHrExportTable + 1);
+
+    if (NT_ERROR(pHunterContext->HR_API.pMmSetPageProtection(
+        pTableLowPaddingBase,
+        REQUIRED_NUMBER_OF_PAGES(
+        (TableLowPaddingSize +
+        sizeof(HR_EXPORT_TABLE) +
+        TableHighPaddingSize))
+        << PAGE_SHIFT,
+        PAGE_EXECUTE_READWRITE))) {
+        DBG_BREAK;
+        goto aborted;
+    }
+
+    if (HR_ERROR(HrGetDecryptAsmStubInfoAsm64(
+        &DecryptAsmStubInfo))) {
+        DBG_BREAK;
+        goto aborted;
+    }
+
+    if (DecryptAsmStubInfo.StubSize > DECRYPT_ASM_STUB_MAXSIZE) {
+        DBG_BREAK;
+        goto aborted;
+    }
+
+    pHunterContext->HR_API.pRtlRandomEx(&Seed);
+    if (HR_ERROR(CryFillBufferRandomDword(
+        (UINT32*)pHrExportTable,
+        DECRYPT_ASM_STUB_MAXSIZE / 4,
+        Seed))) {
+        DBG_BREAK;
+        goto aborted;
+    }
+
+    memmove(
+        pHrExportTable,
+        DecryptAsmStubInfo.pStubBase,
+        DecryptAsmStubInfo.StubSize);
+
+    StubLowPaddingSize =
+        8 - (DecryptAsmStubInfo.StubSize % 8);
+
+    ExportTableDataBase = ((UINT64)pHrExportTable) +
+        (DecryptAsmStubInfo.StubSize + StubLowPaddingSize);
+
+    ExportTableDataEnd = (UINT64)(pHrExportTable + 1);
+
+    ExportTableDataQwordCount =
+        (UINT16)((ExportTableDataEnd - ExportTableDataBase) / 8);
+
+    *(UINT64*)((UINT8*)pHrExportTable +
+        DecryptAsmStubInfo.OffsetDataPtr) =
+        ExportTableDataBase;
+
+    *(UINT32*)((UINT8*)pHrExportTable +
+        DecryptAsmStubInfo.OffsetQwordCount) =
+        ExportTableDataQwordCount;
+
+    *(UINT64*)((UINT8*)pHrExportTable +
+        DecryptAsmStubInfo.OffsetXorKey) =
+        _byteswap_uint64(ExportTableDataKey = QUICK_XOR64(__rdtsc()));
+
+    pHrExportTable->FLTMGR.API.pFltMgrInitFilterCallback =      
+        &FltMgrInitFilterCallback;
+    pHrExportTable->FLTMGR.API.pFltMgrRegisterFilterCallback =
+        &FltMgrRegisterFilterCallback;
+    pHrExportTable->FLTMGR.API.pFltMgrDeregisterFilterCallback =
+        &FltMgrDeregisterFilterCallback;
+    
+    pHrExportTable->FLTMGR.DATA.DpcFilterTypeId =
+        g_FltMgrDpcFilterTypeId;  
+    pHrExportTable->FLTMGR.DATA.TimerFilterTypeId =
+        g_FltMgrTimerFilterTypeId;  
+    pHrExportTable->FLTMGR.DATA.Timer2FilterTypeId =
+        g_FltMgrTimer2FilterTypeId; 
+    pHrExportTable->FLTMGR.DATA.ApcFilterTypeId =
+        g_FltMgrApcFilterTypeId; 
+    pHrExportTable->FLTMGR.DATA.WorkItemFilterTypeId =
+        g_FltMgrWorkItemFilterTypeId;  
+    pHrExportTable->FLTMGR.DATA.WaitThreadFilterTypeId =
+        g_FltMgrWaitThreadFilterTypeId;
+    
+    for (UINT16 i = 0; i < ExportTableDataQwordCount; i++) {
+        ((UINT64*)ExportTableDataBase)[i] ^= ExportTableDataKey;
+    }
+
+    pHunterContext->HR_API.pRtlRandomEx(&Seed);
+    if (HR_ERROR(CryFillBufferRandomDword(
+        pTableLowPaddingBase,
+        (TableLowPaddingSize / 4),
+        Seed))) {
+        DBG_BREAK;
+        goto aborted;
+    }
+
+    pHunterContext->HR_API.pRtlRandomEx(&Seed);
+    if (HR_ERROR(CryFillBufferRandomDword(
+        pTableHighPaddingBase,
+        (TableHighPaddingSize / 4),
+        Seed))) {
+        DBG_BREAK;
+        goto aborted;
+    }
+
+    *pHunterExportTable = pHrExportTable;
+
+    IsAborted = FALSE;
+
+aborted:
+
+    if (IsAborted) {
+        if (pHrExportTable) {
+            RtlSecureZeroMemory(
+                pTableLowPaddingBase,
+                (TableLowPaddingSize +
+                sizeof(HR_EXPORT_TABLE) +
+                TableHighPaddingSize));
+            pHunterContext->HR_API.pMmFreeIndependentPages(
+                pHrExportTable,
+                REQUIRED_NUMBER_OF_PAGES(
+                (TableLowPaddingSize +
+                sizeof(HR_EXPORT_TABLE) +
+                TableHighPaddingSize))
+                << PAGE_SHIFT);
+        }
+
+        return HR_ABORTED;
+    }
+
+    return HR_SUCCESS;
+}
+
 CRITICAL_TABLE *g_pCriticalTable = NULL;
 volatile UINT32 g_CriticalTableLock = 0;
 MMPTE_HARDWARE *g_pCriticalTablePte = NULL;
@@ -75,7 +285,8 @@ HrInitCriticalTable(
 /*++
 * Routine Description:
 *
-*     This routine initializes the critical table.
+*     This routine initializes 
+*     the critical table.
 *
 * Arguments:
 *
@@ -173,7 +384,7 @@ HrInitCriticalTable(
 
     if (HR_ERROR(CryCrc32DataHash(
         (UINT8*)&pCriticalTable->TableSeed,
-        sizeof(HR_CONTEXT) - FIELD_OFFSET(CRITICAL_TABLE, TableSeed),
+        sizeof(CRITICAL_TABLE) - FIELD_OFFSET(CRITICAL_TABLE, TableSeed),
         &pCriticalTable->TableHash32))) {
         DBG_BREAK;
         goto aborted;
@@ -302,18 +513,20 @@ HrReadCriticalTableQword(
 *
 --*/
 {
+    BOOLEAN CurrentIF = FALSE;
+
     CRITICAL_TABLE StackCriticalTable = { 0 };
+
+    BOOLEAN CheckStatus = FALSE;
 
     CRITICAL_TABLE *pCriticalTable = NULL;
     MMPTE_HARDWARE *pCriticalTablePte = NULL;
     UINT64 CriticalTablePfn = 0;
 
-    BOOLEAN CurrentIF = FALSE;
-
     BOOLEAN IsLocked = FALSE;
     BOOLEAN IsAborted = TRUE;
 
-    if (!pQword) {
+    if (!pQword || Offset > (sizeof(CRITICAL_TABLE) - 8)) {
         DBG_BREAK;
         goto aborted;
     }
@@ -356,7 +569,16 @@ HrReadCriticalTableQword(
     if (HR_ERROR(CryDeDiffusionDataFlow(
         (UINT8*)&StackCriticalTable,
         sizeof(CRITICAL_TABLE)))) {
-        RtlSecureZeroMemory(&StackCriticalTable, sizeof(CRITICAL_TABLE));
+        DBG_BREAK;
+        goto aborted;
+    }
+
+    if (HR_ERROR(HrCheckCriticalTableIntegrity(
+        &StackCriticalTable,
+        &CheckStatus))) {
+        DBG_BREAK;
+        goto aborted;
+    } else if (!CheckStatus) {
         DBG_BREAK;
         goto aborted;
     }
@@ -364,16 +586,21 @@ HrReadCriticalTableQword(
     *pQword =
         *(UINT64*)(((UINT8*)&StackCriticalTable) + Offset);
 
-    RtlSecureZeroMemory(&StackCriticalTable, sizeof(CRITICAL_TABLE));
-
-    pCriticalTablePte->Valid = 0;
-    pCriticalTablePte->PageFrameNumber = 0;
-
-    __invlpg(pCriticalTable);
-
     IsAborted = FALSE;
 
 aborted:
+
+    RtlSecureZeroMemory(&StackCriticalTable, sizeof(CRITICAL_TABLE));
+
+    if (pCriticalTablePte) {
+        pCriticalTablePte->Valid = 0;
+        pCriticalTablePte->PageFrameNumber = 0;
+        __invlpg(pCriticalTable);
+    }
+
+    pCriticalTable = NULL;
+    pCriticalTablePte = NULL;
+    CriticalTablePfn = 0;
 
     if (IsLocked) {
         _InterlockedExchange(
@@ -435,50 +662,6 @@ HrCheckCriticalTableIntegrity(
     *pCheckStatus = (CurrentHash32 ==
         QUICK_XOR32(pCriticalTable->TableHash32));
 
-    return HR_SUCCESS;
-}
-
-HR_STATUS
-FASTCALL
-HrGetAsciiStringLength(
-    IN  CONST UINT8 *pString,
-    OUT UINT64 *pLength,
-    IN  UINT64 MaxCount
-)
-/*++
-* Routine Description:
-*
-*     This routine computes the length of the
-*     specified ASCII string.
-*
-* Arguments:
-*
-*     pString  - Supplies a pointer to the
-*                string.
-*
-*     pLength  - Supplies a pointer to a variable that
-*                receives the string length.
-* 
-*     MaxCount - Supplies the maximum count.
-*
-* Return Value:
-*
-*     Internal status.
-*
---*/
-{
-    UINT64 StrLength = 0;
-
-    if (!pString || !pLength) {
-        return HR_ABORTED;
-    }
-
-    while ((StrLength < MaxCount) && pString[StrLength]) {
-        StrLength++;
-    }
-
-    *pLength = StrLength;
-    
     return HR_SUCCESS;
 }
 

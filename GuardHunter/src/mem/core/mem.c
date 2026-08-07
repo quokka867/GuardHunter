@@ -318,7 +318,7 @@ MemFindMemoryPattern(
         return HR_ABORTED;
     }
 
-    if (HR_ERROR(HrGetAsciiStringLength(
+    if (HR_ERROR(MemGetAsciiStringLength(
         pMask,
         &PatternLen,
         MEM_PATTERN_MAXLEN + 1))) {
@@ -351,6 +351,50 @@ MemFindMemoryPattern(
         }
         pCurrentAddress++;
     }
+
+    return HR_SUCCESS;
+}
+
+HR_STATUS
+FASTCALL
+MemGetAsciiStringLength(
+    IN  CONST UINT8 *pString,
+    OUT UINT64 *pLength,
+    IN  UINT64 MaxCount
+)
+/*++
+* Routine Description:
+*
+*     This routine computes the length of the
+*     specified ASCII string.
+*
+* Arguments:
+*
+*     pString  - Supplies a pointer to the
+*                string.
+*
+*     pLength  - Supplies a pointer to a variable that
+*                receives the string length.
+*
+*     MaxCount - Supplies the maximum count.
+*
+* Return Value:
+*
+*     Internal status.
+*
+--*/
+{
+    UINT64 StrLength = 0;
+
+    if (!pString || !pLength || !MaxCount) {
+        return HR_ABORTED;
+    }
+
+    while ((StrLength < MaxCount) && pString[StrLength]) {
+        StrLength++;
+    }
+
+    *pLength = StrLength;
 
     return HR_SUCCESS;
 }

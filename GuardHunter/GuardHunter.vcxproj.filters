@@ -57,9 +57,12 @@
     <ClInclude Include="src\hook\headers\hkrtn.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\utils\headers\hrasm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\base\base.c">
+    <ClCompile Include="src\base\core\base.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\core\crypto.c">
@@ -98,6 +101,9 @@
       <Filter>Source Files</Filter>
     </MASM>
     <MASM Include="src\main.asm">
+      <Filter>Source Files</Filter>
+    </MASM>
+    <MASM Include="src\utils\core\asm\hrasm.asm">
       <Filter>Source Files</Filter>
     </MASM>
   </ItemGroup>

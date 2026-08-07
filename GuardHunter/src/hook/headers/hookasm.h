@@ -34,7 +34,7 @@ typedef struct _HOOK_ASM_STUB_INFO {
 extern
 HR_STATUS
 FASTCALL
-HkGetHookAsmStubRangeAsm64(
+HkGetHookAsmStubInfoAsm64(
     OUT HOOK_ASM_STUB_INFO *pHookAsmStubInfo
 );
 

@@ -78,6 +78,8 @@ extern UINT32 g_FltMgrApcFilterTypeId;
 extern UINT32 g_FltMgrWorkItemFilterTypeId;
 extern UINT32 g_FltMgrWaitThreadFilterTypeId;
 
+#include "../../utils/headers/hr.h"
+
 extern
 HR_STATUS
 FASTCALL

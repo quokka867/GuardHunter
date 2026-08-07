@@ -316,7 +316,7 @@ PeFindExportItemCrc32Hash(
 
     for (UINT32 i = 0; i < NoNames; i++) {
         pNameAddress = ((UINT8*)pImageBase + pTableAddressOfNames[i]);
-        if (HR_ERROR(HrGetAsciiStringLength(
+        if (HR_ERROR(MemGetAsciiStringLength(
             pNameAddress,
             &NameLength,
             ITEM_NAME_MAXLEN + 1))) {

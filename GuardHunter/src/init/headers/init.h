@@ -1,13 +1,14 @@
 #pragma once
 #include "../../_common/common.h"
-#include "../../utils/headers/pe.h"
-#include "../../utils/headers/ntos.h"
-#include "../../utils/headers/hr.h"
 #include "../../utils/headers/crypto.h"
+#include "../../utils/headers/ntos.h"
+#include "../../utils/headers/pe.h"
 
 //
 // Declarations of items from *init.c*.
 //
+
+EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 
 #define NTOS_TEXT_SECTION_NAME     0x2E74657874000000UI64
 #define NTOS_PAGE_SECTION_NAME     0x5041474500000000UI64

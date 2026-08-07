@@ -1,7 +1,7 @@
 #pragma once
-#include <../../ext/ia32.h>
 #include <ntddk.h>
 #include <intrin.h>
+#include <../../ext/ia32.h>
 
 #pragma warning(push)
 #pragma warning(disable: 4201)
@@ -943,7 +943,7 @@ typedef struct _UNWIND_HISTORY_TABLE {
 } UNWIND_HISTORY_TABLE;
 
 //
-// HR_CONTEXT definitions.
+// HR_CONTEXT definition.
 //
 
 #define EPILOGUE_MAXCOUNT 4
