@@ -256,8 +256,6 @@ FltMgrRegisterFilterCallback(
 *
 --*/
 {
-    BOOLEAN CurrentIF = FALSE;
-
     FILTER_DATA *pSelectedFilter = NULL;
 
     if (!pFilterCallback) {
@@ -272,9 +270,7 @@ FltMgrRegisterFilterCallback(
         return HR_ABORTED;
     }
 
-    if ((CurrentIF = IS_INTERRUPTS_ENABLED)) {
-        _disable();
-    }
+    _disable();
 
     while (_interlockedbittestandset(
         (volatile LONG*)&pSelectedFilter->FilterLock,
@@ -292,9 +288,7 @@ FltMgrRegisterFilterCallback(
         (volatile LONG*)&pSelectedFilter->FilterLock,
         0);
 
-    if (CurrentIF) {
-        _enable();
-    }
+    _enable();
 
     return HR_SUCCESS;
 }
@@ -328,8 +322,6 @@ FltMgrDeregisterFilterCallback(
 *
 --*/
 {
-    BOOLEAN CurrentIF = FALSE;
-
     FILTER_DATA *pSelectedFilter = NULL;
     LIST_ENTRY *pCurrentListEntry = NULL;
     FILTER_CALLBACK *pCurrentFilterCallback = NULL;
@@ -348,9 +340,7 @@ FltMgrDeregisterFilterCallback(
         return HR_ABORTED;
     }
 
-    if ((CurrentIF = IS_INTERRUPTS_ENABLED)) {
-        _disable();
-    }
+    _disable();
 
     while (_interlockedbittestandset(
         (volatile LONG*)&pSelectedFilter->FilterLock,
@@ -380,9 +370,7 @@ FltMgrDeregisterFilterCallback(
         (volatile LONG*)&pSelectedFilter->FilterLock,
         0);
 
-    if (CurrentIF) {
-        _enable();
-    }
+    _enable();
 
     *pCallbackFound = CallbackFound;
 

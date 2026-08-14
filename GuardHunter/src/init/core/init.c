@@ -21,20 +21,20 @@
 #define BODY_FALLBACK_PATTERN_MAXCOUNT 4
 
 typedef struct _NTOS_PATTERN_DATA {
-    UINT64 PrimarySectionsName;
+    UINT64 PrimarySectionName;
     CONST VOID *pBodyPrimaryPattern;
     CONST VOID *pBodyPrimaryMask;
 
     UINT8 BodyFallbackPatternCount;
     UINT8 NtosDataPatternPad0[7];
-    UINT64 FallbackSectionsName[BODY_FALLBACK_PATTERN_MAXCOUNT];
-    CONST VOID *pBodyFallbackPatterns[BODY_FALLBACK_PATTERN_MAXCOUNT];
-    CONST VOID *pBodyFallbackMasks[BODY_FALLBACK_PATTERN_MAXCOUNT];
+    UINT64 FallbackSectionName[BODY_FALLBACK_PATTERN_MAXCOUNT];
+    CONST VOID *pBodyFallbackPattern[BODY_FALLBACK_PATTERN_MAXCOUNT];
+    CONST VOID *pBodyFallbackMask[BODY_FALLBACK_PATTERN_MAXCOUNT];
 
     UINT8 EpiloguePatternCount;
     UINT8 NtosDataPatternPad1[7];
-    CONST VOID *pEpiloguePatterns[EPILOGUE_MAXCOUNT];
-    CONST VOID *pEpilogueMasks[EPILOGUE_MAXCOUNT];
+    CONST VOID *pEpiloguePattern[EPILOGUE_MAXCOUNT];
+    CONST VOID *pEpilogueMask[EPILOGUE_MAXCOUNT];
 } NTOS_PATTERN_DATA;
 
 #define NTOS_PATTERN_DATA_BASE_ID 0xA6A8A1BFUI32
@@ -136,42 +136,50 @@ typedef struct _NTOS_PATTERN_DATA {
 (NTOS_PATTERN_DATA_BASE_ID + (NTOS_PATTERN_ID_OFFSET * 22))
 
 // 22.
-#define NTOS_PATTERN_DATA_KIERRATA671PRESENT_ID \
+#define NTOS_PATTERN_DATA_KIDECODEMCAFAULT_ID \
 (NTOS_PATTERN_DATA_BASE_ID + (NTOS_PATTERN_ID_OFFSET * 23))
+
+// 23.
+#define NTOS_PATTERN_DATA_FSRTLUNINITIALIZESMALLMCB_ID \
+(NTOS_PATTERN_DATA_BASE_ID + (NTOS_PATTERN_ID_OFFSET * 24))
+
+// 24.
+#define NTOS_PATTERN_DATA_KIERRATA671PRESENT_ID \
+(NTOS_PATTERN_DATA_BASE_ID + (NTOS_PATTERN_ID_OFFSET * 25))
 
 //
 // NTOS items.
 //
 
-// 23.
-#define NTOS_PATTERN_DATA_KIWAITNEVER_ID \
-(NTOS_PATTERN_DATA_BASE_ID + (NTOS_PATTERN_ID_OFFSET * 24))
-
-// 24.
-#define NTOS_PATTERN_DATA_KIWAITALWAYS_ID \
-(NTOS_PATTERN_DATA_BASE_ID + (NTOS_PATTERN_ID_OFFSET * 25)) 
-
 // 25.
-#define NTOS_PATTERN_DATA_KIBALANCESETMANAGERPERIODICDPC_ID \
+#define NTOS_PATTERN_DATA_KIWAITNEVER_ID \
 (NTOS_PATTERN_DATA_BASE_ID + (NTOS_PATTERN_ID_OFFSET * 26))
 
 // 26.
-#define NTOS_PATTERN_DATA_KIBALANCESETMANAGERPERIODICEVENT_ID \
-(NTOS_PATTERN_DATA_BASE_ID + (NTOS_PATTERN_ID_OFFSET * 27)) 
+#define NTOS_PATTERN_DATA_KIWAITALWAYS_ID \
+(NTOS_PATTERN_DATA_BASE_ID + (NTOS_PATTERN_ID_OFFSET * 27))
 
 // 27.
-#define NTOS_PATTERN_DATA_PGGLOBALCONTEXT_ID \
+#define NTOS_PATTERN_DATA_KIBALANCESETMANAGERPERIODICDPC_ID \
 (NTOS_PATTERN_DATA_BASE_ID + (NTOS_PATTERN_ID_OFFSET * 28))
 
 // 28.
-#define NTOS_PATTERN_DATA_PGCHECKTIMERIDT_ID \
+#define NTOS_PATTERN_DATA_KIBALANCESETMANAGERPERIODICEVENT_ID \
 (NTOS_PATTERN_DATA_BASE_ID + (NTOS_PATTERN_ID_OFFSET * 29))
 
 // 29.
-#define NTOS_PATTERN_DATA_PGCHECKTIMERSSDT_ID \
+#define NTOS_PATTERN_DATA_PGGLOBALCONTEXT_ID \
 (NTOS_PATTERN_DATA_BASE_ID + (NTOS_PATTERN_ID_OFFSET * 30))
 
-#define NTOS_PATTERN_ID_COUNT 29 + (1)
+// 30.
+#define NTOS_PATTERN_DATA_PGCHECKTIMERIDT_ID \
+(NTOS_PATTERN_DATA_BASE_ID + (NTOS_PATTERN_ID_OFFSET * 31))
+
+// 31.
+#define NTOS_PATTERN_DATA_PGCHECKTIMERSSDT_ID \
+(NTOS_PATTERN_DATA_BASE_ID + (NTOS_PATTERN_ID_OFFSET * 32))
+
+#define NTOS_PATTERN_ID_COUNT 31 + (1)
 
 #define _x "\xC3"
 #define _0 "\x90"
@@ -214,15 +222,15 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x48\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\x48\xC1\x00\x19\x00\x00\x48\x00\x00\x41\x00\x04";
             pPatternData->pBodyPrimaryMask    = _x _0 _0 _0 _0 _0 _0 _0 _x _x _x _x _0 _x _0 _0 _x _0 _0 _x _0 _x;
 
-            pPatternData->pBodyFallbackPatterns[0] = "\x48\x00\x00\x00\x00\x00\x00\xDE\xFF\xFF\x48\xC1\x00\x0C\x48\x00\xFF\x0F";
-            pPatternData->pBodyFallbackMasks[0]    = _x _0 _x _x _x _x _x _x _x _x _x _x _0 _x _x _0 _x _x;
-            pPatternData->pBodyFallbackPatterns[1] = "\x0F\x57\x00\x40\x0F\x95\x00\x4D\x00\x00\x48\xC1\x00\x00\x48\x00\x00";
-            pPatternData->pBodyFallbackMasks[1]    = _x _x _0 _x _x _x _0 _x _0 _0 _x _x _0 _0 _x _0 _0;
+            pPatternData->pBodyFallbackPattern[0] = "\x48\x00\x00\x00\x00\x00\x00\xDE\xFF\xFF\x48\xC1\x00\x0C\x48\x00\xFF\x0F";
+            pPatternData->pBodyFallbackMask[0]    = _x _0 _x _x _x _x _x _x _x _x _x _x _0 _x _x _0 _x _x;
+            pPatternData->pBodyFallbackPattern[1] = "\x0F\x57\x00\x40\x0F\x95\x00\x4D\x00\x00\x48\xC1\x00\x00\x48\x00\x00";
+            pPatternData->pBodyFallbackMask[1]    = _x _x _0 _x _x _x _0 _x _0 _0 _x _x _0 _0 _x _0 _0;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_PAGE_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_PAGE_SECTION_NAME);
 
-            pPatternData->FallbackSectionsName[0] = QUICK_XOR64(NTOS_PAGE_SECTION_NAME);
-            pPatternData->FallbackSectionsName[1] = QUICK_XOR64(NTOS_PAGE_SECTION_NAME);
+            pPatternData->FallbackSectionName[0] = QUICK_XOR64(NTOS_PAGE_SECTION_NAME);
+            pPatternData->FallbackSectionName[1] = QUICK_XOR64(NTOS_PAGE_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 2;
 
@@ -232,15 +240,15 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x41\x0F\x95\x00\x48\xC1\x00\x0C\x00\x00\x00\x48\xC1\x00\x09\x0F\x11\x45";
             pPatternData->pBodyPrimaryMask    = _x _x _x _0 _x _x _0 _x _0 _0 _0 _x _x _0 _x _x _x _x;
 
-            pPatternData->pBodyFallbackPatterns[0] = "\x41\x0F\xB6\x00\x44\x0F\x22\x00\x48\x8B\x00\x00\x48\x8D\x00\x00\x00\x00\x00\x00\x00\x00\xE8";
-            pPatternData->pBodyFallbackMasks[0]    = _x _x _x _0 _x _x _x _0 _x _x _0 _0 _x _x _0 _0 _0 _0 _0 _0 _0 _0 _x;
-            pPatternData->pBodyFallbackPatterns[1] = "\x0F\x57\x00\x00\x00\x00\x48\x89\x00\x00\x48\xF7\x00\xFF\x0F\x00\x00";
-            pPatternData->pBodyFallbackMasks[1]    = _x _x _0 _0 _0 _0 _x _x _0 _0 _x _x _0 _x _x _x _x;
+            pPatternData->pBodyFallbackPattern[0] = "\x41\x0F\xB6\x00\x44\x0F\x22\x00\x48\x8B\x00\x00\x48\x8D\x00\x00\x00\x00\x00\x00\x00\x00\xE8";
+            pPatternData->pBodyFallbackMask[0]    = _x _x _x _0 _x _x _x _0 _x _x _0 _0 _x _x _0 _0 _0 _0 _0 _0 _0 _0 _x;
+            pPatternData->pBodyFallbackPattern[1] = "\x0F\x57\x00\x00\x00\x00\x48\x89\x00\x00\x48\xF7\x00\xFF\x0F\x00\x00";
+            pPatternData->pBodyFallbackMask[1]    = _x _x _0 _0 _0 _0 _x _x _0 _0 _x _x _0 _x _x _x _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
-            pPatternData->FallbackSectionsName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
-            pPatternData->FallbackSectionsName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 2;
 
@@ -250,15 +258,15 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\xE8\x00\x00\x00\x00\x85\x00\x75\x00\x00\x00\xE8\x00\x00\x00\x00\x83\x00\x07\x77\x00\x00\x00\x83\x00\x05";
             pPatternData->pBodyPrimaryMask    = _x _0 _0 _0 _0 _x _0 _x _0 _0 _0 _x _0 _0 _0 _0 _x _0 _x _x _0 _0 _0 _x _0 _x;
 
-            pPatternData->pBodyFallbackPatterns[0] = "\x80\x00\x05\x74\x00\x00\x00\x74\x00\x48\xF7\x05\x00\x00\x00\x00\x00\x80\x00\x00";
-            pPatternData->pBodyFallbackMasks[0]    = _x _0 _x _x _0 _0 _0 _x _0 _x _x _x _0 _0 _0 _0 _x _x _x _x;
-            pPatternData->pBodyFallbackPatterns[1] = "\x48\xF7\x05\x00\x00\x00\x00\x00\x80\x00\x00\x75\x00\x44\x8B\x00\x48\x8B\x00\x48\x8B";
-            pPatternData->pBodyFallbackMasks[1]    = _x _x _x _0 _0 _0 _0 _x _x _x _x _x _0 _x _x _0 _x _x _0 _x _x;
+            pPatternData->pBodyFallbackPattern[0] = "\x80\x00\x05\x74\x00\x00\x00\x74\x00\x48\xF7\x05\x00\x00\x00\x00\x00\x80\x00\x00";
+            pPatternData->pBodyFallbackMask[0]    = _x _0 _x _x _0 _0 _0 _x _0 _x _x _x _0 _0 _0 _0 _x _x _x _x;
+            pPatternData->pBodyFallbackPattern[1] = "\x48\xF7\x05\x00\x00\x00\x00\x00\x80\x00\x00\x75\x00\x44\x8B\x00\x48\x8B\x00\x48\x8B";
+            pPatternData->pBodyFallbackMask[1]    = _x _x _x _0 _0 _0 _0 _x _x _x _x _x _0 _x _x _0 _x _x _0 _x _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
-            pPatternData->FallbackSectionsName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
-            pPatternData->FallbackSectionsName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 2;
 
@@ -268,15 +276,15 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x48\x0F\x00\x48\x33\x00\x00\x00\x00\x00\x49\x89\x00\x00\x48\x8D\x00\x00\x41\x83\x00\xFF\x75\x00\xC3\xCC";
             pPatternData->pBodyPrimaryMask    = _x _x _0 _x _x _0 _0 _0 _0 _x _x _x _0 _0 _x _x _0 _0 _x _x _0 _x _x _0 _x _x;
 
-            pPatternData->pBodyFallbackPatterns[0] = "\x41\x0F\x11\x00\x00\x00\x00\x00\x0F\x10\x00\x00\x00\x00\x00\x41\x0F\x11\x00\x00\x48\x83\x00\x00\x75\x00\x0F\x10";
-            pPatternData->pBodyFallbackMasks[0]    = _x _x _x _0 _0 _0 _0 _0 _x _x _0 _0 _0 _0 _0 _x _x _x _0 _0 _x _x _0 _0 _x _0 _x _x;
-            pPatternData->pBodyFallbackPatterns[1] = "\x48\x83\x00\x00\x75\x00\x0F\x10\x00\x41\x0F\x11\x00\x0F\x10\x00\x00\x41\x0F\x11\x00\x00\xC3\xCC";
-            pPatternData->pBodyFallbackMasks[1]    = _x _x _0 _0 _x _0 _x _x _0 _x _x _x _0 _x _x _0 _0 _x _x _x _0 _0 _x _x;
+            pPatternData->pBodyFallbackPattern[0] = "\x41\x0F\x11\x00\x00\x00\x00\x00\x0F\x10\x00\x00\x00\x00\x00\x41\x0F\x11\x00\x00\x48\x83\x00\x00\x75\x00\x0F\x10";
+            pPatternData->pBodyFallbackMask[0]    = _x _x _x _0 _0 _0 _0 _0 _x _x _0 _0 _0 _0 _0 _x _x _x _0 _0 _x _x _0 _0 _x _0 _x _x;
+            pPatternData->pBodyFallbackPattern[1] = "\x48\x83\x00\x00\x75\x00\x0F\x10\x00\x41\x0F\x11\x00\x0F\x10\x00\x00\x41\x0F\x11\x00\x00\xC3\xCC";
+            pPatternData->pBodyFallbackMask[1]    = _x _x _0 _0 _x _0 _x _x _0 _x _x _x _0 _x _x _0 _0 _x _x _x _0 _0 _x _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
-            pPatternData->FallbackSectionsName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
-            pPatternData->FallbackSectionsName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 2;
 
@@ -286,15 +294,15 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x21\x00\x24\x00\x0F\x57\x00\x41\x0F\x11\x00\x48\x00\x00\x41\x0F\x11";
             pPatternData->pBodyPrimaryMask    = _x _0 _x _0 _x _x _0 _x _x _x _0 _x _0 _0 _x _x _x;
 
-            pPatternData->pBodyFallbackPatterns[0] = "\x0F\x57\x00\x45\x00\x00\x0F\x11\x00\x48\x00\x00\x0F\x11\x00\x00\x44\x8D";
-            pPatternData->pBodyFallbackMasks[0]    = _x _x _0 _x _0 _0 _x _x _0 _x _0 _0 _x _x _0 _0 _x _x;
-            pPatternData->pBodyFallbackPatterns[1] = "\x48\x00\x00\x88\x00\x00\xE8\x00\x00\x00\x00\x3D\x06\x02\x00\xC0\x75\x00\x83\x7C\x24\x00\x00\x73";
-            pPatternData->pBodyFallbackMasks[1]    = _x _0 _0 _x _0 _0 _x _0 _0 _0 _0 _x _x _x _x _x _x _0 _x _x _x _0 _0 _x;
+            pPatternData->pBodyFallbackPattern[0] = "\x0F\x57\x00\x45\x00\x00\x0F\x11\x00\x48\x00\x00\x0F\x11\x00\x00\x44\x8D";
+            pPatternData->pBodyFallbackMask[0]    = _x _x _0 _x _0 _0 _x _x _0 _x _0 _0 _x _x _0 _0 _x _x;
+            pPatternData->pBodyFallbackPattern[1] = "\x48\x00\x00\x88\x00\x00\xE8\x00\x00\x00\x00\x3D\x06\x02\x00\xC0\x75\x00\x83\x7C\x24\x00\x00\x73";
+            pPatternData->pBodyFallbackMask[1]    = _x _0 _0 _x _0 _0 _x _0 _0 _0 _0 _x _x _x _x _x _x _0 _x _x _x _0 _0 _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TRACESUP_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TRACESUP_SECTION_NAME);
 
-            pPatternData->FallbackSectionsName[0] = QUICK_XOR64(NTOS_TRACESUP_SECTION_NAME);
-            pPatternData->FallbackSectionsName[1] = QUICK_XOR64(NTOS_TRACESUP_SECTION_NAME);
+            pPatternData->FallbackSectionName[0] = QUICK_XOR64(NTOS_TRACESUP_SECTION_NAME);
+            pPatternData->FallbackSectionName[1] = QUICK_XOR64(NTOS_TRACESUP_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 2;
 
@@ -305,15 +313,15 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x41\x00\x01\x00\x00\x00\x00\x00\x45\x00\x00\x75\x00\x00\x84\x00\x74\x00\x0F\xB6\x00\x24\x00\x48\x00\x00\xE8";
             pPatternData->pBodyPrimaryMask    = _x _0 _x _x _x _x _0 _0 _x _0 _0 _x _0 _0 _x _0 _x _0 _x _x _0 _x _0 _x _0 _0 _x;
 
-            pPatternData->pBodyFallbackPatterns[0] = "\x89\x00\x79\x00\x49\x8B\x00\xC7\x00\x05\x00\x00\xC0\x45\x84\x00\x0F\x95";
-            pPatternData->pBodyFallbackMasks[0]    = _x _0 _x _0 _x _x _0 _x _0 _x _x _x _x _x _x _0 _x _x;
-            pPatternData->pBodyFallbackPatterns[1] = "\x48\x00\x00\x45\x84\x00\x48\x0F\x44\x00\x48\x0F\x44\x00\x0F\xB6\x00\x24\x00\x83\x00\x01\x74";
-            pPatternData->pBodyFallbackMasks[1]    = _x _0 _0 _x _x _0 _x _x _x _0 _x _x _x _0 _x _x _0 _x _0 _x _0 _x _x;
+            pPatternData->pBodyFallbackPattern[0] = "\x89\x00\x79\x00\x49\x8B\x00\xC7\x00\x05\x00\x00\xC0\x45\x84\x00\x0F\x95";
+            pPatternData->pBodyFallbackMask[0]    = _x _0 _x _0 _x _x _0 _x _0 _x _x _x _x _x _x _0 _x _x;
+            pPatternData->pBodyFallbackPattern[1] = "\x48\x00\x00\x45\x84\x00\x48\x0F\x44\x00\x48\x0F\x44\x00\x0F\xB6\x00\x24\x00\x83\x00\x01\x74";
+            pPatternData->pBodyFallbackMask[1]    = _x _0 _0 _x _x _0 _x _x _x _0 _x _x _x _0 _x _x _0 _x _0 _x _0 _x _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TRACESUP_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TRACESUP_SECTION_NAME);
 
-            pPatternData->FallbackSectionsName[0] = QUICK_XOR64(NTOS_TRACESUP_SECTION_NAME);
-            pPatternData->FallbackSectionsName[1] = QUICK_XOR64(NTOS_TRACESUP_SECTION_NAME);
+            pPatternData->FallbackSectionName[0] = QUICK_XOR64(NTOS_TRACESUP_SECTION_NAME);
+            pPatternData->FallbackSectionName[1] = QUICK_XOR64(NTOS_TRACESUP_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 2;
 
@@ -323,15 +331,15 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\xCC\xCC\xCC\xCC\xCC\xCC\xCC\xCC\xCC\xCC\xCC\xCC\xCC";
             pPatternData->pBodyPrimaryMask    = _x _x _x _x _x _x _x _x _x _x _x _x _x;
 
-            pPatternData->pBodyFallbackPatterns[0] = pPatternData->pBodyPrimaryPattern;
-            pPatternData->pBodyFallbackMasks[0]    = pPatternData->pBodyPrimaryMask;
-            pPatternData->pBodyFallbackPatterns[1] = pPatternData->pBodyPrimaryPattern;
-            pPatternData->pBodyFallbackMasks[1]    = pPatternData->pBodyPrimaryMask;
+            pPatternData->pBodyFallbackPattern[0] = pPatternData->pBodyPrimaryPattern;
+            pPatternData->pBodyFallbackMask[0]    = pPatternData->pBodyPrimaryMask;
+            pPatternData->pBodyFallbackPattern[1] = pPatternData->pBodyPrimaryPattern;
+            pPatternData->pBodyFallbackMask[1]    = pPatternData->pBodyPrimaryMask;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
-            pPatternData->FallbackSectionsName[0] = QUICK_XOR64(NTOS_PAGE_SECTION_NAME);
-            pPatternData->FallbackSectionsName[1] = QUICK_XOR64(NTOS_INITKDBG_SECTION_NAME);
+            pPatternData->FallbackSectionName[0] = QUICK_XOR64(NTOS_PAGE_SECTION_NAME);
+            pPatternData->FallbackSectionName[1] = QUICK_XOR64(NTOS_INITKDBG_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 2;
 
@@ -341,15 +349,15 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x1F\x00\x00\x00\x41\x00\x00\x01\x00\x2F\x00\x00\x00\x0F\x00\x00\x48";
             pPatternData->pBodyPrimaryMask    = _x _x _x _x _x _0 _0 _x _0 _x _x _x _x _x _0 _0 _x;
 
-            pPatternData->pBodyFallbackPatterns[0] = "\x46\x0F\xB6\x00\x00\x41\xC1\x00\x06\x0F\xB6\x00\x00\x01\x44";
-            pPatternData->pBodyFallbackMasks[0]    = _x _x _x _0 _0 _x _x _0 _x _x _x _0 _0 _x _x;
-            pPatternData->pBodyFallbackPatterns[1] = "\x75\x00\xFA\x00\x01\x48\x8B\x00\x00\x00\x00\x00\x00\x48";
-            pPatternData->pBodyFallbackMasks[1]    = _x _0 _x _0 _x _x _x _0 _0 _0 _0 _0 _0 _x;
+            pPatternData->pBodyFallbackPattern[0] = "\x46\x0F\xB6\x00\x00\x41\xC1\x00\x06\x0F\xB6\x00\x00\x01\x44";
+            pPatternData->pBodyFallbackMask[0]    = _x _x _x _0 _0 _x _x _0 _x _x _x _0 _0 _x _x;
+            pPatternData->pBodyFallbackPattern[1] = "\x75\x00\xFA\x00\x01\x48\x8B\x00\x00\x00\x00\x00\x00\x48";
+            pPatternData->pBodyFallbackMask[1]    = _x _0 _x _0 _x _x _x _0 _0 _0 _0 _0 _0 _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
-            pPatternData->FallbackSectionsName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
-            pPatternData->FallbackSectionsName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 2;
 
@@ -359,15 +367,15 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x45\x00\x00\x44\x89\x00\x00\x0F\x57\x00\x4C\x89\x00\x00\x0F\x57\x00\x48\x89\x00\x00\x00\x48";
             pPatternData->pBodyPrimaryMask    = _x _0 _0 _x _x _0 _0 _x _x _0 _x _x _0 _0 _x _x _0 _x _x _0 _0 _0 _x;
 
-            pPatternData->pBodyFallbackPatterns[0] = "\xFF\x00\x49\x87\x00\x00\x48\x85\x00\x74\x00\xF0\x0F\xBA\x00\x00\x00\x00\x00\x0F\x82";
-            pPatternData->pBodyFallbackMasks[0]    = _x _0 _x _x _0 _0 _x _x _0 _x _0 _x _x _x _0 _0 _0 _0 _0 _x _x;
-            pPatternData->pBodyFallbackPatterns[1] = "\x0F\xBC\x00\x75\x00\x89\x00\x24\x00\x00\x00\xF6\x00\x00\x0F\x85\x00\x00\x00\x00\x48";
-            pPatternData->pBodyFallbackMasks[1]    = _x _x _0 _x _0 _x _0 _x _0 _0 _0 _x _0 _0 _x _x _0 _0 _0 _0 _x;
+            pPatternData->pBodyFallbackPattern[0] = "\xFF\x00\x49\x87\x00\x00\x48\x85\x00\x74\x00\xF0\x0F\xBA\x00\x00\x00\x00\x00\x0F\x82";
+            pPatternData->pBodyFallbackMask[0]    = _x _0 _x _x _0 _0 _x _x _0 _x _0 _x _x _x _0 _0 _0 _0 _0 _x _x;
+            pPatternData->pBodyFallbackPattern[1] = "\x0F\xBC\x00\x75\x00\x89\x00\x24\x00\x00\x00\xF6\x00\x00\x0F\x85\x00\x00\x00\x00\x48";
+            pPatternData->pBodyFallbackMask[1]    = _x _x _0 _x _0 _x _0 _x _0 _0 _0 _x _0 _0 _x _x _0 _0 _0 _0 _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
-            pPatternData->FallbackSectionsName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
-            pPatternData->FallbackSectionsName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 2;
 
@@ -377,15 +385,15 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x89\x00\x00\x00\x89\x00\x00\x0F\x11\x00\x00\x00\x89\x00\x00\x0F\x11\x00\x00\x00\x88\x00\x00\x00\x88";
             pPatternData->pBodyPrimaryMask    = _x _0 _0 _0 _x _0 _0 _x _x _0 _0 _0 _x _0 _0 _x _x _0 _0 _0 _x _0 _0 _0 _x;
 
-            pPatternData->pBodyFallbackPatterns[0] = "\x81\x00\x7F\xF0\xFF\xFF\x00\x00\x00\x00\x00\xF0\x0F\xB1\x00\x00\x00\x74";
-            pPatternData->pBodyFallbackMasks[0]    = _x _0 _x _x _x _x _0 _0 _0 _0 _0 _x _x _x _0 _0 _0 _x;
-            pPatternData->pBodyFallbackPatterns[1] = "\xF0\x0F\xB1\x00\x00\x00\x74\x00\x00\x00\x00\x00\x00\x00\x00\x7F\xF0\xFF\xFF\x00\x00\x00\xF0\x0F\xB1";
-            pPatternData->pBodyFallbackMasks[1]    = _x _x _x _0 _0 _0 _x _0 _0 _0 _0 _0 _0 _0 _0 _x _x _x _x _0 _0 _0 _x _x _x;
+            pPatternData->pBodyFallbackPattern[0] = "\x81\x00\x7F\xF0\xFF\xFF\x00\x00\x00\x00\x00\xF0\x0F\xB1\x00\x00\x00\x74";
+            pPatternData->pBodyFallbackMask[0]    = _x _0 _x _x _x _x _0 _0 _0 _0 _0 _x _x _x _0 _0 _0 _x;
+            pPatternData->pBodyFallbackPattern[1] = "\xF0\x0F\xB1\x00\x00\x00\x74\x00\x00\x00\x00\x00\x00\x00\x00\x7F\xF0\xFF\xFF\x00\x00\x00\xF0\x0F\xB1";
+            pPatternData->pBodyFallbackMask[1]    = _x _x _x _0 _0 _0 _x _0 _0 _0 _0 _0 _0 _0 _0 _x _x _x _x _0 _0 _0 _x _x _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
-            pPatternData->FallbackSectionsName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
-            pPatternData->FallbackSectionsName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 2;
 
@@ -395,15 +403,15 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x66\x83\x00\x33\x0F\x85\x00\x00\x00\x00\x48\x8B\x00\x00\x00\x00\x00\x00\x00\x00\x0F\x87";
             pPatternData->pBodyPrimaryMask    = _x _x _0 _x _x _x _0 _0 _0 _0 _x _x _0 _0 _0 _0 _0 _0 _0 _0 _x _x;
 
-            pPatternData->pBodyFallbackPatterns[0] = "\x41\x00\x01\x00\x00\x00\x41\x00\x02\x00\x00\x00\x00\x39\x00\x0F\x84";
-            pPatternData->pBodyFallbackMasks[0]    = _x _0 _x _x _x _x _x _0 _x _x _x _x _0 _x _0 _x _x;
-            pPatternData->pBodyFallbackPatterns[1] = "\x75\x00\x00\x8B\x00\x00\x48\x39\x00\x0F\x84\x00\x00\x00\x00\x00\x03\x00\x00\x00\xCD\x29\x66\x83\x00\x10";
-            pPatternData->pBodyFallbackMasks[1]    = _x _0 _0 _x _0 _0 _x _x _0 _x _x _0 _0 _0 _0 _0 _x _x _x _x _x _x _x _x _0 _x;
+            pPatternData->pBodyFallbackPattern[0] = "\x41\x00\x01\x00\x00\x00\x41\x00\x02\x00\x00\x00\x00\x39\x00\x0F\x84";
+            pPatternData->pBodyFallbackMask[0]    = _x _0 _x _x _x _x _x _0 _x _x _x _x _0 _x _0 _x _x;
+            pPatternData->pBodyFallbackPattern[1] = "\x75\x00\x00\x8B\x00\x00\x48\x39\x00\x0F\x84\x00\x00\x00\x00\x00\x03\x00\x00\x00\xCD\x29\x66\x83\x00\x10";
+            pPatternData->pBodyFallbackMask[1]    = _x _0 _0 _x _0 _0 _x _x _0 _x _x _0 _0 _0 _0 _0 _x _x _x _x _x _x _x _x _0 _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
-            pPatternData->FallbackSectionsName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
-            pPatternData->FallbackSectionsName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 2;
 
@@ -413,42 +421,42 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\xF0\x45\x21\x00\xC6\x00\x00\x00\x00\x00\x00\x65\x48\x8B\x00\x25\x20\x00\x00\x00\x48\x83";
             pPatternData->pBodyPrimaryMask    = _x _x _x _0 _x _0 _0 _0 _x _x _x _x _x _x _0 _x _x _x _x _x _x _x;
 
-            pPatternData->pBodyFallbackPatterns[0] = "\x0F\x85\x00\x00\x00\x00\x85\x00\x0F\x84\x00\x00\x00\x00\x00\x00\x48\x03\x00\x00\xE9\x1E";
-            pPatternData->pBodyFallbackMasks[0]    = _x _x _0 _0 _0 _0 _x _0 _x _x _0 _0 _0 _0 _0 _0 _x _x _0 _0 _x _x;
-            pPatternData->pBodyFallbackPatterns[1] = "\x74\x00\xF0\x0F\xBA\x00\x00\x00\x44\x8B\x00\x00\x00\x00\x48\x00\x00\x00\x48\x00\x00\xE8";
-            pPatternData->pBodyFallbackMasks[1]    = _x _0 _x _x _x _0 _0 _0 _x _x _0 _0 _0 _0 _x _0 _0 _0 _x _0 _0 _x;
+            pPatternData->pBodyFallbackPattern[0] = "\x0F\x85\x00\x00\x00\x00\x85\x00\x0F\x84\x00\x00\x00\x00\x00\x00\x48\x03\x00\x00\xE9\x1E";
+            pPatternData->pBodyFallbackMask[0]    = _x _x _0 _0 _0 _0 _x _0 _x _x _0 _0 _0 _0 _0 _0 _x _x _0 _0 _x _x;
+            pPatternData->pBodyFallbackPattern[1] = "\x74\x00\xF0\x0F\xBA\x00\x00\x00\x44\x8B\x00\x00\x00\x00\x48\x00\x00\x00\x48\x00\x00\xE8";
+            pPatternData->pBodyFallbackMask[1]    = _x _0 _x _x _x _0 _0 _0 _x _x _0 _0 _0 _0 _x _0 _0 _0 _x _0 _0 _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
-            pPatternData->FallbackSectionsName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
-            pPatternData->FallbackSectionsName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
-            pPatternData->pEpiloguePatterns[0] = "\xC3\xCC\x44\x0F\x20\x00\x00\x00\x00\x00\x00";
-            pPatternData->pEpilogueMasks[0]    = _x _x _x _x _x _0 _0 _0 _0 _x _x;
+            pPatternData->pEpiloguePattern[0] = "\xC3\xCC\x44\x0F\x20\x00\x00\x00\x00\x00\x00";
+            pPatternData->pEpilogueMask[0]    = _x _x _x _x _x _0 _0 _0 _0 _x _x;
 
             pPatternData->BodyFallbackPatternCount = 2;
 
             pPatternData->EpiloguePatternCount = 1;
             break;
         case NTOS_PATTERN_DATA_KEWAITFORSINGLEOBJECT_EPI_ID:
-            pPatternData->pEpiloguePatterns[0] = "\xC3\xCC\x66\x66\x66\x0F";
-            pPatternData->pEpilogueMasks[0]    = _x _x _x _x _x _x;
+            pPatternData->pEpiloguePattern[0] = "\xC3\xCC\x66\x66\x66\x0F";
+            pPatternData->pEpilogueMask[0]    = _x _x _x _x _x _x;
 
             pPatternData->BodyFallbackPatternCount = 0;
 
             pPatternData->EpiloguePatternCount = 1;
             break;
         case NTOS_PATTERN_DATA_KEWAITFORMULTIPLEOBJECTS_EPI_ID:
-            pPatternData->pEpiloguePatterns[0] = "\xC3\xCC\x83\x00\x00\x77";
-            pPatternData->pEpilogueMasks[0]    = _x _x _x _0 _0 _x;
+            pPatternData->pEpiloguePattern[0] = "\xC3\xCC\x83\x00\x00\x77";
+            pPatternData->pEpilogueMask[0]    = _x _x _x _0 _0 _x;
 
             pPatternData->BodyFallbackPatternCount = 0;
 
             pPatternData->EpiloguePatternCount = 1;
             break;
         case NTOS_PATTERN_DATA_KEDELAYEXECUTIONTHREAD_EPI_ID:
-            pPatternData->pEpiloguePatterns[0] = "\xC3\xCC\x48\x89\x00\x24\x00\x00\x00\x00";
-            pPatternData->pEpilogueMasks[0]    = _x _x _x _x _0 _x _0 _0 _x _x;
+            pPatternData->pEpiloguePattern[0] = "\xC3\xCC\x48\x89\x00\x24\x00\x00\x00\x00";
+            pPatternData->pEpilogueMask[0]    = _x _x _x _x _0 _x _0 _0 _x _x;
 
             pPatternData->BodyFallbackPatternCount = 0;
 
@@ -458,7 +466,7 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\xE8\x00\x00\x00\x00\x48\x00\x00\x48\xC1\x00\x00\x48\xFF\x00\x48\x83\x00\x00\x0F\x87\x00\x00\x00\x00\x45";
             pPatternData->pBodyPrimaryMask    = _x _0 _0 _0 _0 _x _0 _0 _x _x _0 _0 _x _x _0 _x _x _0 _0 _x _x _0 _0 _0 _0 _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 0;
 
@@ -468,7 +476,7 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x48\x83\xEC\x00\xFF\x00\x74\x00\xE8\x00\x00\x00\x00\x8B\x00\x48\x83\xC4\x00\xC3\xCC\xCC\xCC";
             pPatternData->pBodyPrimaryMask    = _x _x _x _0 _x _0 _x _0 _x _0 _0 _0 _0 _x _0 _x _x _x _0 _x _x _x _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 0;
 
@@ -480,9 +488,9 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryMask    = _x _x _x _0 _x _x _x _x _x _x _x _x _0 _x _0 _0 _x _x _x _x _0 _0 _x _0 _0 _x;
 
             if (PatternDataId == NTOS_PATTERN_DATA_CCBCBPROFILER_ID) {
-                pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+                pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
             } else {
-                pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_PAGE_SECTION_NAME);
+                pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_PAGE_SECTION_NAME);
             }
 
             pPatternData->BodyFallbackPatternCount = 0;
@@ -493,7 +501,7 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x44\x0F\x22\x00\x00\x3D\x00\x00\x00\x00\x00\x0F\x85\x00\x00\x00\x00\x00\x3D\x00\x00\x00\x00\x00\x75";
             pPatternData->pBodyPrimaryMask    = _x _x _x _0 _0 _x _0 _0 _0 _x _x _x _x _0 _0 _0 _0 _0 _x _0 _0 _0 _x _x _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 0;
 
@@ -503,7 +511,27 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\xEB\x00\x0F\xAE\xE8\x0F\x31\x48\xC1\x00\x00\x4C\x8D\x00\x00\x00\x00\x00\x48\x00\x00\x48";
             pPatternData->pBodyPrimaryMask    = _x _0 _x _x _x _x _x _x _x _0 _0 _x _x _0 _0 _0 _0 _0 _x _0 _0 _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+
+            pPatternData->BodyFallbackPatternCount = 0;
+
+            pPatternData->EpiloguePatternCount = 0;
+            break;
+        case NTOS_PATTERN_DATA_KIDECODEMCAFAULT_ID:
+            pPatternData->pBodyPrimaryPattern = "\xE8\x00\x00\x00\x00\xE9\x00\x00\x00\x00\x44\x8B\x00\x00\x00\x00\x00\x48\x00\x01\x20\x00\x04\x80\x00\x10\x70";
+            pPatternData->pBodyPrimaryMask    = _x _0 _0 _0 _0 _x _0 _0 _0 _0 _x _x _0 _0 _0 _0 _0 _x _0 _x _x _x _x _x _x _x _x;
+                                              
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+
+            pPatternData->BodyFallbackPatternCount = 0;
+
+            pPatternData->EpiloguePatternCount = 0;
+            break;
+        case NTOS_PATTERN_DATA_FSRTLUNINITIALIZESMALLMCB_ID:
+            pPatternData->pBodyPrimaryPattern = "\x41\xFF\x00\x48\x83\xC4\x00\x00\x00\x48\x8B\x00\x00\x00\x00\x00\xFF\x00\x48\x83\xC4\x00\xC3\x0F\x0D\x00\xC3";
+            pPatternData->pBodyPrimaryMask    = _x _x _0 _x _x _x _0 _0 _0 _x _x _0 _0 _0 _0 _0 _x _0 _x _x _x _0 _x _x _x _0 _x;
+                                                  
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_INITKDBG_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 0;
 
@@ -513,7 +541,7 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x33\xC0\xFF\xC0\xC3\x66\x66\x66";
             pPatternData->pBodyPrimaryMask    = _x _x _x _x _x _x _x _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_INITKDBG_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_INITKDBG_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 0;
 
@@ -523,15 +551,15 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x48\x8B\x00\x00\x00\x00\x00\x48\x8B\x00\x48\x00\x00\x48\xD3\x00\x48\x8D\x00\x00\x00\x00\x00\x48\x00\x00\x48\x0F";
             pPatternData->pBodyPrimaryMask    = _x _x _0 _0 _0 _0 _x _x _x _0 _x _0 _0 _x _x _0 _x _x _0 _0 _0 _0 _x _x _0 _0 _x _x;
 
-            pPatternData->pBodyFallbackPatterns[0] = "\x48\x8B\x00\x00\x00\x00\x00\x48\x8B\x00\x00\x49\x0F\x00\x4C\x33\x00\x00\x00\x49\xD3";
-            pPatternData->pBodyFallbackMasks[0]    = _x _x _0 _0 _0 _0 _x _x _x _0 _0 _x _x _0 _x _x _0 _0 _0 _x _x;
-            pPatternData->pBodyFallbackPatterns[1] = "\x48\x8B\x00\x00\x00\x00\x00\x00\x00\x00\x48\x33\x00\x00\x00\x00\x00\x48\x00\x00\x48\x0F\x00\x48";
-            pPatternData->pBodyFallbackMasks[1]    = _x _x _0 _0 _0 _0 _x _0 _0 _0 _x _x _0 _0 _0 _0 _x _x _0 _0 _x _x _0 _x;
+            pPatternData->pBodyFallbackPattern[0] = "\x48\x8B\x00\x00\x00\x00\x00\x48\x8B\x00\x00\x49\x0F\x00\x4C\x33\x00\x00\x00\x49\xD3";
+            pPatternData->pBodyFallbackMask[0]    = _x _x _0 _0 _0 _0 _x _x _x _0 _0 _x _x _0 _x _x _0 _0 _0 _x _x;
+            pPatternData->pBodyFallbackPattern[1] = "\x48\x8B\x00\x00\x00\x00\x00\x00\x00\x00\x48\x33\x00\x00\x00\x00\x00\x48\x00\x00\x48\x0F\x00\x48";
+            pPatternData->pBodyFallbackMask[1]    = _x _x _0 _0 _0 _0 _x _0 _0 _0 _x _x _0 _0 _0 _0 _x _x _0 _0 _x _x _0 _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
-            pPatternData->FallbackSectionsName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
-            pPatternData->FallbackSectionsName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 2;
 
@@ -541,15 +569,15 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x00\x33\x00\x00\x00\x00\x00\x49\x89\x00\x00\x48\x8D\x00\x00\x41\x83\x00\xFF\x75\x00\xC3\xCC";
             pPatternData->pBodyPrimaryMask    = _0 _x _0 _0 _0 _0 _x _x _x _0 _0 _x _x _0 _0 _x _x _0 _x _x _0 _x _x;
 
-            pPatternData->pBodyFallbackPatterns[0] = "\x00\x33\x00\x00\x00\x00\x00\x48\x8B\x00\x00\x00\x00\x00\x48\x8B\x00\x00\x49\x0F\x00\x4C\x33\x00\x00\x00\x49\xD3";
-            pPatternData->pBodyFallbackMasks[0]    = _0 _x _0 _0 _0 _0 _x _x _x _0 _0 _0 _0 _x _x _x _0 _0 _x _x _0 _x _x _0 _0 _0 _x _x;
-            pPatternData->pBodyFallbackPatterns[1] = "\x48\x33\x00\x00\x00\x00\x00\x48\x00\x00\x48\x0F\x00\x48\x00\x00\x4C\x89\x00\x24";
-            pPatternData->pBodyFallbackMasks[1]    = _x _x _0 _0 _0 _0 _x _x _0 _0 _x _x _0 _x _0 _0 _x _x _0 _x;
+            pPatternData->pBodyFallbackPattern[0] = "\x00\x33\x00\x00\x00\x00\x00\x48\x8B\x00\x00\x00\x00\x00\x48\x8B\x00\x00\x49\x0F\x00\x4C\x33\x00\x00\x00\x49\xD3";
+            pPatternData->pBodyFallbackMask[0]    = _0 _x _0 _0 _0 _0 _x _x _x _0 _0 _0 _0 _x _x _x _0 _0 _x _x _0 _x _x _0 _0 _0 _x _x;
+            pPatternData->pBodyFallbackPattern[1] = "\x48\x33\x00\x00\x00\x00\x00\x48\x00\x00\x48\x0F\x00\x48\x00\x00\x4C\x89\x00\x24";
+            pPatternData->pBodyFallbackMask[1]    = _x _x _0 _0 _0 _0 _x _x _0 _0 _x _x _0 _x _0 _0 _x _x _0 _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
-            pPatternData->FallbackSectionsName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
-            pPatternData->FallbackSectionsName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->FallbackSectionName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 2;
 
@@ -559,7 +587,7 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x48\x8D\x00\x00\x00\x00\x00\x45\x00\x00\x89\x00\x00\x00\x00\x00\x00\x00\xE8\x00\x00\x00\x00\xE9\x00\x00\x00\x00\x44\x8B";
             pPatternData->pBodyPrimaryMask    = _x _x _0 _0 _0 _0 _0 _x _0 _0 _x _0 _0 _0 _0 _0 _0 _0 _x _0 _0 _0 _0 _x _0 _0 _0 _0 _x _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 0;
 
@@ -569,7 +597,7 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x48\x8D\x00\x00\x00\x00\x00\x48\x89\x00\x24\x00\x8D\x00\x00\x48\x8B\x00\x00\x00\x00\x00\x49\x00\x04";
             pPatternData->pBodyPrimaryMask    = _x _x _0 _0 _0 _0 _0 _x _x _0 _x _0 _x _0 _0 _x _x _0 _0 _0 _0 _0 _x _0 _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 0;
 
@@ -579,7 +607,7 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x48\x8B\x00\x00\x00\x00\x00\x48\x8B\x00\x00\x00\x00\x00\x48\x8B\x00\x00\xFB\x0F\xBA";
             pPatternData->pBodyPrimaryMask    = _x _x _0 _0 _0 _0 _x _x _x _0 _0 _0 _0 _x _x _x _0 _0 _x _x _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 0;
 
@@ -589,7 +617,7 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x48\x3B\x00\x00\x00\x00\x00\x0F\x93\x00\x85\x00\x0F\x84\x00\x00\x00\x00\x0F\x01\x8C\x24";
             pPatternData->pBodyPrimaryMask    = _x _x _0 _0 _0 _0 _x _x _x _0 _x _0 _x _x _0 _0 _0 _0 _x _x _x _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 0;
 
@@ -599,7 +627,7 @@ InitGetPatternData(
             pPatternData->pBodyPrimaryPattern = "\x48\x3B\x00\x00\x00\x00\x00\x45\x8D\x00\x00\x0F\x82\x00\x00\x00\x00\x4C\x8D\x00\x00\x00\x00\x00\x00\x00\x00\x0F\x18\x05";
             pPatternData->pBodyPrimaryMask    = _x _x _0 _0 _0 _0 _x _x _x _0 _0 _x _x _0 _0 _0 _0 _x _x _0 _0 _0 _0 _x _0 _0 _0 _x _x _x;
 
-            pPatternData->PrimarySectionsName = QUICK_XOR64(NTOS_PAGE_SECTION_NAME);
+            pPatternData->PrimarySectionName = QUICK_XOR64(NTOS_PAGE_SECTION_NAME);
 
             pPatternData->BodyFallbackPatternCount = 0;
 
@@ -868,7 +896,7 @@ InitHunterContext(
     }
     if (HR_ERROR(PeFindSectionMemoryPattern(
         pNtosBase,
-        NtosPatternData.PrimarySectionsName,
+        NtosPatternData.PrimarySectionName,
         TRUE,
         NtosPatternData.pBodyPrimaryPattern,
         NtosPatternData.pBodyPrimaryMask,
@@ -881,10 +909,10 @@ InitHunterContext(
             i2 < NtosPatternData.BodyFallbackPatternCount; i2++) {
             if (HR_ERROR(PeFindSectionMemoryPattern(
                 pNtosBase,
-                NtosPatternData.FallbackSectionsName[i2],
+                NtosPatternData.FallbackSectionName[i2],
                 TRUE,
-                NtosPatternData.pBodyFallbackPatterns[i2],
-                NtosPatternData.pBodyFallbackMasks[i2],
+                NtosPatternData.pBodyFallbackPattern[i2],
+                NtosPatternData.pBodyFallbackMask[i2],
                 (VOID*)&pMmAllocateIndependentPagesEx))) {
                 DBG_BREAK;
                 goto aborted;
@@ -1022,6 +1050,14 @@ InitHunterContext(
             pSelectedItem = (VOID**)&pHunterContext->NTOS_ROUTINES.
                 pKiSwInterruptDispatch;
             break;
+        case NTOS_PATTERN_DATA_KIDECODEMCAFAULT_ID:
+            pSelectedItem = (VOID**)&pHunterContext->NTOS_ROUTINES.
+                pKiDecodeMcaFault;
+            break;
+        case NTOS_PATTERN_DATA_FSRTLUNINITIALIZESMALLMCB_ID:
+            pSelectedItem = (VOID**)&pHunterContext->NTOS_ROUTINES.
+                pFsRtlUninitializeSmallMcb;
+            break;
         case NTOS_PATTERN_DATA_KIERRATA671PRESENT_ID:
             pSelectedItem = (VOID**)&pHunterContext->NTOS_ROUTINES.
                 pKiErrata671Present;
@@ -1060,7 +1096,7 @@ InitHunterContext(
         }
         if (HR_ERROR(PeFindSectionMemoryPattern(
             pNtosBase,
-            NtosPatternData.PrimarySectionsName,
+            NtosPatternData.PrimarySectionName,
             TRUE,
             NtosPatternData.pBodyPrimaryPattern,
             NtosPatternData.pBodyPrimaryMask,
@@ -1079,10 +1115,10 @@ InitHunterContext(
                 i2 < NtosPatternData.BodyFallbackPatternCount; i2++) {
                 if (HR_ERROR(PeFindSectionMemoryPattern(
                     pNtosBase,
-                    NtosPatternData.FallbackSectionsName[i2],
+                    NtosPatternData.FallbackSectionName[i2],
                     TRUE,
-                    NtosPatternData.pBodyFallbackPatterns[i2],
-                    NtosPatternData.pBodyFallbackMasks[i2],
+                    NtosPatternData.pBodyFallbackPattern[i2],
+                    NtosPatternData.pBodyFallbackMask[i2],
                     pSelectedItem))) {
                     DBG_BREAK;
                     goto aborted;
@@ -1209,18 +1245,18 @@ InitHunterContext(
             pSelectedItem = (VOID**)&pHunterContext->NTOS_ROUTINES.
                 pKeWaitForSingleObject;
             break;
-            case NTOS_KEWAITFORMULTIPLEOBJECTS_NAME_HASH32_ID:
+        case NTOS_KEWAITFORMULTIPLEOBJECTS_NAME_HASH32_ID:
             CurrentItemNameHash = QUICK_XOR32(
                 NTOS_KEWAITFORMULTIPLEOBJECTS_NAME_HASH32);
             pSelectedItem = (VOID**)&pHunterContext->NTOS_ROUTINES.
                 pKeWaitForMultipleObjects;
             break;
-            case NTOS_KEDELAYEXECUTIONTHREAD_NAME_HASH32_ID:
-                CurrentItemNameHash = QUICK_XOR32(
-                    NTOS_KEDELAYEXECUTIONTHREAD_NAME_HASH32);
-                pSelectedItem = (VOID**)&pHunterContext->NTOS_ROUTINES.
-                    pKeDelayExecutionThread;
-                break;
+        case NTOS_KEDELAYEXECUTIONTHREAD_NAME_HASH32_ID:
+            CurrentItemNameHash = QUICK_XOR32(
+                NTOS_KEDELAYEXECUTIONTHREAD_NAME_HASH32);
+            pSelectedItem = (VOID**)&pHunterContext->NTOS_ROUTINES.
+                pKeDelayExecutionThread;
+            break;
         default:
             DBG_BREAK;
             goto aborted;
@@ -1292,8 +1328,8 @@ InitHunterContext(
                     *pSelectedItem,
                     ((ImageBase + pFunctionEntry->EndAddress) -
                     (UINT64)*pSelectedItem),
-                    NtosPatternData.pEpiloguePatterns[i3],
-                    NtosPatternData.pEpilogueMasks[i3],
+                    NtosPatternData.pEpiloguePattern[i3],
+                    NtosPatternData.pEpilogueMask[i3],
                     &pSelectedItem2[i3]))) {
                     DBG_BREAK;
                     goto aborted;

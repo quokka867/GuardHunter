@@ -43,8 +43,6 @@ MemWriteRomData(
 *
 --*/
 {
-    BOOLEAN CurrentIF = FALSE;
-
     BOOLEAN CurrentWP = FALSE;
 
     if (!pDest || !pSrc || !SrcSize) {
@@ -52,27 +50,19 @@ MemWriteRomData(
         return HR_ABORTED;
     }
 
-    if ((CurrentIF = IS_INTERRUPTS_ENABLED)) {
-        _disable();
-    }
+    _disable();
 
     if ((CurrentWP = IS_WRITE_PROTECTION_ENABLED)) {
         __writecr0(__readcr0() & ~CR0_WRITE_PROTECT_FLAG);
     }
 
-    KeMemoryBarrier();
-
     memmove(pDest, pSrc, SrcSize);
-
-    KeMemoryBarrier();
 
     if (CurrentWP) {
         __writecr0(__readcr0() | CR0_WRITE_PROTECT_FLAG);
     }
 
-    if (CurrentIF) {
-        _enable();
-    }
+    _enable();
 
     return HR_SUCCESS;
 }
@@ -105,8 +95,6 @@ MemSetRomData(
 *
 --*/
 {
-    BOOLEAN CurrentIF = FALSE;
-
     BOOLEAN CurrentWP = FALSE;
 
     if (!pDest || !SrcSize) {
@@ -114,15 +102,11 @@ MemSetRomData(
         return HR_ABORTED;
     }
 
-    if ((CurrentIF = IS_INTERRUPTS_ENABLED)) {
-        _disable();
-    }
+    _disable();
 
     if ((CurrentWP = IS_WRITE_PROTECTION_ENABLED)) {
         __writecr0(__readcr0() & ~CR0_WRITE_PROTECT_FLAG);
     }
-
-    KeMemoryBarrier();
 
     switch (SrcSize) {
     case 1:
@@ -160,15 +144,11 @@ MemSetRomData(
 
 success:
 
-    KeMemoryBarrier();
-
     if (CurrentWP) {
         __writecr0(__readcr0() | CR0_WRITE_PROTECT_FLAG);
     }
 
-    if (CurrentIF) {
-        _enable();
-    }
+    _enable();
 
     return HR_SUCCESS;
 }
@@ -183,8 +163,8 @@ MemIsHyperProtectedCr0Unsafe(
 * Routine Description:
 *
 *     This routine performs introspection to determine the
-*     hyper-protection settings for the CR0 register based on the
-*     CR0 bit mask configured in the hypervisor VMCS/VMCB settings.
+*     hyper-protection for the CR0 register based on the
+*     CR0 bit mask configured in the hypervisor VMCS/VMCB.
 *
 * Arguments:
 *

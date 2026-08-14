@@ -19,103 +19,105 @@
 // Filter.
 //
 
-#define BS_MAIN_FILTER_CALLBACK_BASE_ID   0x5EA4D8B3UI32
-#define BS_MAIN_FILTER_CALLBACK_ID_OFFSET 0x17A3UI16
+#define BS_FILTER_CALLBACK_BASE_ID   0x5EA4D8B3UI32
+#define BS_FILTER_CALLBACK_ID_OFFSET 0x17A3UI16
 
 // 01.
-#define BS_MAIN_DPC_FILTER_CALLBACK_ID \
-(BS_MAIN_FILTER_CALLBACK_BASE_ID + \
-BS_MAIN_FILTER_CALLBACK_ID_OFFSET)
+#define BS_DPC_FILTER_CALLBACK_ID \
+(BS_FILTER_CALLBACK_BASE_ID + \
+BS_FILTER_CALLBACK_ID_OFFSET)
 
 // 02.
-#define BS_MAIN_TIMER_FILTER_CALLBACK_ID \
-(BS_MAIN_FILTER_CALLBACK_BASE_ID + \
-(BS_MAIN_FILTER_CALLBACK_ID_OFFSET * 2))
+#define BS_TIMER_FILTER_CALLBACK_ID \
+(BS_FILTER_CALLBACK_BASE_ID + \
+(BS_FILTER_CALLBACK_ID_OFFSET * 2))
 
 // 03.
-#define BS_MAIN_TIMER2_FILTER_CALLBACK_ID \
-(BS_MAIN_FILTER_CALLBACK_BASE_ID + \
-(BS_MAIN_FILTER_CALLBACK_ID_OFFSET * 3))
+#define BS_TIMER2_FILTER_CALLBACK_ID \
+(BS_FILTER_CALLBACK_BASE_ID + \
+(BS_FILTER_CALLBACK_ID_OFFSET * 3))
 
 // 04.
-#define BS_MAIN_APC_FILTER_CALLBACK_ID \
-(BS_MAIN_FILTER_CALLBACK_BASE_ID + \
-(BS_MAIN_FILTER_CALLBACK_ID_OFFSET * 4))
+#define BS_APC_FILTER_CALLBACK_ID \
+(BS_FILTER_CALLBACK_BASE_ID + \
+(BS_FILTER_CALLBACK_ID_OFFSET * 4))
 
 // 05.
-#define BS_MAIN_WORK_ITEM_FILTER_CALLBACK_ID \
-(BS_MAIN_FILTER_CALLBACK_BASE_ID + \
-(BS_MAIN_FILTER_CALLBACK_ID_OFFSET * 5))
+#define BS_WORK_ITEM_FILTER_CALLBACK_ID \
+(BS_FILTER_CALLBACK_BASE_ID + \
+(BS_FILTER_CALLBACK_ID_OFFSET * 5))
 
 // 06.
-#define BS_MAIN_WAIT_THREAD_FILTER_CALLBACK_ID \
-(BS_MAIN_FILTER_CALLBACK_BASE_ID + \
-(BS_MAIN_FILTER_CALLBACK_ID_OFFSET * 6))
+#define BS_WAIT_THREAD_FILTER_CALLBACK_ID \
+(BS_FILTER_CALLBACK_BASE_ID + \
+(BS_FILTER_CALLBACK_ID_OFFSET * 6))
 
-#define BS_MAIN_FILTER_CALLBACK_COUNT 6
+#define BS_FILTER_CALLBACK_COUNT 6
 
 //
 // Hook.
 //
 
-#define BS_MAIN_HOOK_TARGET_BASE_ID   0xE0943BB3UI32
-#define BS_MAIN_HOOK_TARGET_ID_OFFSET 0xF5E4UI16
+#define BS_HOOK_TARGET_BASE_ID   0xE0943BB3UI32
+#define BS_HOOK_TARGET_ID_OFFSET 0xF5E4UI16
 
 // 01.
-#define BS_MAIN_HOOK_TARGET_KICUSTOMRECURSEROUTINEX_ID \
-(BS_MAIN_HOOK_TARGET_BASE_ID + \
-BS_MAIN_HOOK_TARGET_ID_OFFSET)
+#define BS_HOOK_TARGET_KICUSTOMRECURSEROUTINEX_ID \
+(BS_HOOK_TARGET_BASE_ID + \
+BS_HOOK_TARGET_ID_OFFSET)
 
 // 02.
-#define BS_MAIN_HOOK_TARGET_KIEXECUTEALLDPCS_ID \
-(BS_MAIN_HOOK_TARGET_BASE_ID + \
-(BS_MAIN_HOOK_TARGET_ID_OFFSET * 2))
+#define BS_HOOK_TARGET_KIEXECUTEALLDPCS_ID \
+(BS_HOOK_TARGET_BASE_ID + \
+(BS_HOOK_TARGET_ID_OFFSET * 2))
 
 // 03.
-#define BS_MAIN_HOOK_TARGET_KIPROCESSEXPIREDTIMERLIST_ID \
-(BS_MAIN_HOOK_TARGET_BASE_ID + \
-(BS_MAIN_HOOK_TARGET_ID_OFFSET * 3))
+#define BS_HOOK_TARGET_KIPROCESSEXPIREDTIMERLIST_ID \
+(BS_HOOK_TARGET_BASE_ID + \
+(BS_HOOK_TARGET_ID_OFFSET * 3))
 
 // 04.
-#define BS_MAIN_HOOK_TARGET_KIEXPIRETIMER2_ID \
-(BS_MAIN_HOOK_TARGET_BASE_ID + \
-(BS_MAIN_HOOK_TARGET_ID_OFFSET * 4))
+#define BS_HOOK_TARGET_KIEXPIRETIMER2_ID \
+(BS_HOOK_TARGET_BASE_ID + \
+(BS_HOOK_TARGET_ID_OFFSET * 4))
 
 // 05.
-#define BS_MAIN_HOOK_TARGET_KIDELIVERAPC_ID \
-(BS_MAIN_HOOK_TARGET_BASE_ID + \
-(BS_MAIN_HOOK_TARGET_ID_OFFSET * 5))
+#define BS_HOOK_TARGET_KIDELIVERAPC_ID \
+(BS_HOOK_TARGET_BASE_ID + \
+(BS_HOOK_TARGET_ID_OFFSET * 5))
 
-#define BS_MAIN_HOOK_TARGET_COUNT 5
+#define BS_HOOK_TARGET_COUNT 5
 
 //
 // Epi hook.
 //
 
-#define BS_MAIN_EPI_HOOK_TARGET_BASE_ID   0x0CCCAEF9UI32
-#define BS_MAIN_EPI_HOOK_TARGET_ID_OFFSET 0x5AA6UI16
+#define BS_EPI_HOOK_TARGET_BASE_ID   0x0CCCAEF9UI32
+#define BS_EPI_HOOK_TARGET_ID_OFFSET 0x5AA6UI16
 
 // 01.
-#define BS_MAIN_HOOK_TARGET_EPI_KEREMOVEPRIQUEUEEPI_ID \
-(BS_MAIN_EPI_HOOK_TARGET_BASE_ID + \
-BS_MAIN_EPI_HOOK_TARGET_ID_OFFSET)
+#define BS_HOOK_TARGET_EPI_KEREMOVEPRIQUEUEEPI_ID \
+(BS_EPI_HOOK_TARGET_BASE_ID + \
+BS_EPI_HOOK_TARGET_ID_OFFSET)
 
 // 02.
-#define BS_MAIN_HOOK_TARGET_EPI_KEWAITFORSINGLEOBJECTEPI_ID \
-(BS_MAIN_EPI_HOOK_TARGET_BASE_ID + \
-(BS_MAIN_EPI_HOOK_TARGET_ID_OFFSET * 2))
+#define BS_HOOK_TARGET_EPI_KEWAITFORSINGLEOBJECTEPI_ID \
+(BS_EPI_HOOK_TARGET_BASE_ID + \
+(BS_EPI_HOOK_TARGET_ID_OFFSET * 2))
 
 // 03.
-#define BS_MAIN_HOOK_TARGET_EPI_KEWAITFORMULTIPLEOBJECTSEPI_ID \
-(BS_MAIN_EPI_HOOK_TARGET_BASE_ID + \
-(BS_MAIN_EPI_HOOK_TARGET_ID_OFFSET * 3))
+#define BS_HOOK_TARGET_EPI_KEWAITFORMULTIPLEOBJECTSEPI_ID \
+(BS_EPI_HOOK_TARGET_BASE_ID + \
+(BS_EPI_HOOK_TARGET_ID_OFFSET * 3))
 
 // 04.
-#define BS_MAIN_HOOK_TARGET_EPI_KEDELAYEXECUTIONTHREADEPI_ID \
-(BS_MAIN_EPI_HOOK_TARGET_BASE_ID + \
-(BS_MAIN_EPI_HOOK_TARGET_ID_OFFSET * 4))
+#define BS_HOOK_TARGET_EPI_KEDELAYEXECUTIONTHREADEPI_ID \
+(BS_EPI_HOOK_TARGET_BASE_ID + \
+(BS_EPI_HOOK_TARGET_ID_OFFSET * 4))
 
-#define BS_MAIN_EPI_HOOK_TARGET_COUNT 4
+#define BS_EPI_HOOK_TARGET_COUNT 4
+
+#define BS_FIX_ROUTINE_COUNT 6
 
 HR_EXPORT_TABLE*
 FASTCALL
@@ -169,7 +171,7 @@ BsMain (
 
     UINT32 FilterTypeSelectorId = 0;
 
-    UINT32 BsMainFilterCallbackId = 0;
+    UINT32 BsFilterCallbackId = 0;
 
     UINT32 FilterTypeId = 0;
     VOID *pFilterCallbackRoutine = 0;
@@ -179,15 +181,17 @@ BsMain (
 
     WRITE_PRCB_QWORD WritePrcbQword = { 0 };
 
+    VOID *pFixRoutine[BS_FIX_ROUTINE_COUNT] = { 0 };
+
     UINT8 *pStartPgRecurseRoutine = NULL;
     UINT8 *pCurrentPgRecurseRoutine = NULL;
     UINT8 *pNextPgRecurseRoutine = NULL;
 
-    UINT32 BsMainHookTargetId = 0;
+    UINT32 BsHookTargetId = 0;
     VOID *pHookTarget = 0;
     VOID *pHookRoutine = 0;
 
-    UINT32 BsMainEpiHookTargetId = 0;
+    UINT32 BsEpiHookTargetId = 0;
     UINT64 *pEpiHookTarget = NULL;
     VOID *pEpiHookRoutine = 0;
 
@@ -238,13 +242,13 @@ BsMain (
     if (HR_ERROR(PeTruncateImageHeaders(
         pHunterContext->NTOS_PROCESS.HR_IMAGE.pImageBase))) {
         DbgLog(DBG_ABORTED_PREFIX
-               "Module PE32+ headers truncation failed.\n");
+               "Module PE headers truncation failed.\n");
         DBG_BREAK;
         goto aborted;
     }
 
     DbgLog(DBG_SUCCESS_PREFIX
-           "Module PE32+ headers truncated successfully.\n");
+           "Module PE headers truncated successfully.\n");
 
     if (HR_ERROR(HrInitCriticalTable(pHunterContext))) {
         DbgLog(DBG_ABORTED_PREFIX
@@ -267,7 +271,7 @@ BsMain (
             DbgLog(DBG_ABORTED_PREFIX
                    "Filter initialization failed.\n");
             DbgLog(DBG_ABORTED_PREFIX
-                   "Filter selector id: 0x%I32X\n",
+                   "Filter selector ID: 0x%I32X\n",
                    FilterTypeSelectorId);
             DBG_BREAK;
             goto aborted;
@@ -303,41 +307,41 @@ BsMain (
     DbgLog(DBG_SUCCESS_PREFIX
            "Filter callbacks allocated successfully.\n");
 
-    BsMainFilterCallbackId = BS_MAIN_FILTER_CALLBACK_BASE_ID;
+    BsFilterCallbackId = BS_FILTER_CALLBACK_BASE_ID;
 
-    for (UINT8 i = 0; i < BS_MAIN_FILTER_CALLBACK_COUNT; i++) {
-        BsMainFilterCallbackId += BS_MAIN_FILTER_CALLBACK_ID_OFFSET;
-        switch (BsMainFilterCallbackId) {
-        case BS_MAIN_DPC_FILTER_CALLBACK_ID:
+    for (UINT8 i = 0; i < BS_FILTER_CALLBACK_COUNT; i++) {
+        BsFilterCallbackId += BS_FILTER_CALLBACK_ID_OFFSET;
+        switch (BsFilterCallbackId) {
+        case BS_DPC_FILTER_CALLBACK_ID:
             FilterTypeId = g_FltMgrDpcFilterTypeId;
             pFilterCallbackRoutine = (VOID*)&FltIsPatchGuardDpc;
             break;
-        case BS_MAIN_TIMER_FILTER_CALLBACK_ID:
+        case BS_TIMER_FILTER_CALLBACK_ID:
             FilterTypeId = g_FltMgrTimerFilterTypeId;
             pFilterCallbackRoutine = (VOID*)&FltIsPatchGuardDpc;
             break;
-        case BS_MAIN_TIMER2_FILTER_CALLBACK_ID:
+        case BS_TIMER2_FILTER_CALLBACK_ID:
             FilterTypeId = g_FltMgrTimer2FilterTypeId;
             pFilterCallbackRoutine = (VOID*)&FltIsPatchGuardTimer2;
             break;
-        case BS_MAIN_APC_FILTER_CALLBACK_ID:
+        case BS_APC_FILTER_CALLBACK_ID:
             FilterTypeId = g_FltMgrApcFilterTypeId;
             pFilterCallbackRoutine = (VOID*)&FltIsPatchGuardApc;
             break;
-        case BS_MAIN_WORK_ITEM_FILTER_CALLBACK_ID:
+        case BS_WORK_ITEM_FILTER_CALLBACK_ID:
             FilterTypeId = g_FltMgrWorkItemFilterTypeId;
             pFilterCallbackRoutine = (VOID*)&FltIsPatchGuardWorkItem;
             break;
-        case BS_MAIN_WAIT_THREAD_FILTER_CALLBACK_ID:
+        case BS_WAIT_THREAD_FILTER_CALLBACK_ID:
             FilterTypeId = g_FltMgrWaitThreadFilterTypeId;
             pFilterCallbackRoutine = (VOID*)&FltIsPatchGuardWaitThread;
             break;
         default:
             DbgLog(DBG_ABORTED_PREFIX
-                   "Unknown filter callback id.\n");
+                   "Unknown filter callback ID.\n");
             DbgLog(DBG_ABORTED_PREFIX
-                   "Filter callback id: 0x%I32X\n",
-                   BsMainFilterCallbackId);
+                   "Filter callback ID: 0x%I32X\n",
+                   BsFilterCallbackId);
             DBG_BREAK;
             goto aborted;
         }
@@ -349,8 +353,8 @@ BsMain (
             DbgLog(DBG_ABORTED_PREFIX
                    "Filter callback initialization failed.\n");
             DbgLog(DBG_ABORTED_PREFIX
-                   "Filter callback id: 0x%I32X\n",
-                   BsMainFilterCallbackId);
+                   "Filter callback ID: 0x%I32X\n",
+                   BsFilterCallbackId);
             DBG_BREAK;
             goto aborted;
         } else if (HR_ERROR(FltMgrRegisterFilterCallback(    
@@ -358,10 +362,10 @@ BsMain (
             pFilterCallback + i))) {
             DbgLog(DBG_ABORTED_PREFIX
                    "Filter callback registration failed.\n",
-                   BsMainFilterCallbackId);
+                   BsFilterCallbackId);
             DbgLog(DBG_ABORTED_PREFIX
-                   "Filter callback id: 0x%I32X\n",
-                   BsMainFilterCallbackId);
+                   "Filter callback ID: 0x%I32X\n",
+                   BsFilterCallbackId);
             DBG_BREAK;
             goto aborted;
         }
@@ -378,7 +382,6 @@ BsMain (
     WritePrcbQword.OffsetQword =
         pHunterContext->NTOS_OFFSETS_TABLE.KPRCB_OFFSETS.
         OffsetHalReserved + (8 * 7);
-
     pHunterContext->HR_API.pKeIpiGenericCall(
         (KIPI_BROADCAST_WORKER*)&NtosWritePrcbQword,
         (UINT64)&WritePrcbQword);
@@ -386,7 +389,6 @@ BsMain (
     WritePrcbQword.OffsetQword =
         pHunterContext->NTOS_OFFSETS_TABLE.KPRCB_OFFSETS.
         OffsetAcpiReserved;
-
     pHunterContext->HR_API.pKeIpiGenericCall(
         (KIPI_BROADCAST_WORKER*)&NtosWritePrcbQword,
         (UINT64)&WritePrcbQword);
@@ -395,117 +397,60 @@ BsMain (
         ((pHunterContext->HR_API.pKeQueryActiveProcessorCountEx(
             ALL_PROCESSOR_GROUPS) * 2))) {
         DbgLog(DBG_ABORTED_PREFIX
-               "PRCB processing failed.\n");
+               "Processing of PRCBs failed.\n");
         DBG_BREAK;
         goto aborted;
     }
     
     DbgLog(DBG_SUCCESS_PREFIX
-           "PRCB processed successfully.\n");
+           "PRCBs processed successfully.\n");
 
-    if (HR_ERROR(MemWriteRomData(
-        (UINT8*)pHunterContext->NTOS_ROUTINES.pCcBcbProfiler,
-        RoutineExecuteFix,
-        sizeof(RoutineExecuteFix)))) {
-        DbgLog(DBG_ABORTED_PREFIX
-               "NTOS routine processing failed.\n");
-        DbgLog(DBG_ABORTED_PREFIX
-               "NTOS routine: 0x%I64X\n",
-            pHunterContext->NTOS_ROUTINES.pCcBcbProfiler);
-        DBG_BREAK;
-        goto aborted;
-    }
+    pFixRoutine[0] = pHunterContext->NTOS_ROUTINES.pCcBcbProfiler;
+    pFixRoutine[1] = pHunterContext->NTOS_ROUTINES.pCcBcbProfiler2;
+    pFixRoutine[2] = pHunterContext->NTOS_ROUTINES.pKiDispatchCallout;
+    pFixRoutine[3] = pHunterContext->NTOS_ROUTINES.pKiSwInterruptDispatch;
+    pFixRoutine[4] = pHunterContext->NTOS_ROUTINES.pKiDecodeMcaFault;
+    pFixRoutine[5] = pHunterContext->NTOS_ROUTINES.pFsRtlUninitializeSmallMcb;
 
-    if (HR_ERROR(MemWriteRomData(
-        (UINT8*)pHunterContext->NTOS_ROUTINES.pCcBcbProfiler2,
-        RoutineExecuteFix,
-        sizeof(RoutineExecuteFix)))) {
-        DbgLog(DBG_ABORTED_PREFIX
-               "NTOS routine processing failed.\n");
-        DbgLog(DBG_ABORTED_PREFIX
-               "NTOS routine: 0x%I64X\n",
-            pHunterContext->NTOS_ROUTINES.pCcBcbProfiler2);
-        DBG_BREAK;
-        goto aborted;
-    }
-
-    if (HR_ERROR(MemWriteRomData(
-        (UINT8*)pHunterContext->NTOS_ROUTINES.pKiDispatchCallout,
-        RoutineExecuteFix,
-        sizeof(RoutineExecuteFix)))) {
-        DbgLog(DBG_ABORTED_PREFIX
-               "NTOS routine processing failed.\n");
-        DbgLog(DBG_ABORTED_PREFIX
-               "NTOS routine: 0x%I64X\n",
-            pHunterContext->NTOS_ROUTINES.pKiDispatchCallout);
-        DBG_BREAK;
-        goto aborted;
-    }
-
-    if (HR_ERROR(MemWriteRomData(
-        (UINT8*)pHunterContext->NTOS_ROUTINES.pKiSwInterruptDispatch,
-        RoutineExecuteFix,
-        sizeof(RoutineExecuteFix)))) {
-        DbgLog(DBG_ABORTED_PREFIX
-               "NTOS routine processing failed.\n");
-        DbgLog(DBG_ABORTED_PREFIX
-               "NTOS routine: 0x%I64X\n",
-            pHunterContext->NTOS_ROUTINES.pKiSwInterruptDispatch);
-        DBG_BREAK;
-        goto aborted;
+    for (UINT8 i = 0; i < (sizeof(pFixRoutine) / 8); i++) {
+        if (HR_ERROR(MemWriteRomData(
+            (UINT8*)pFixRoutine[i],
+            RoutineExecuteFix,
+            sizeof(RoutineExecuteFix)))) {
+            DbgLog(DBG_ABORTED_PREFIX
+                   "NTOS routine fix failed.\n");
+            DbgLog(DBG_ABORTED_PREFIX
+                   "NTOS routine: 0x%I64X\n",
+                pFixRoutine[i]);
+            DBG_BREAK;
+            goto aborted;
+        }
     }
 
     pHunterContext->
         NTOS_ITEMS.pKiBalanceSetManagerPeriodicDpc->DeferredRoutine =
         (PKDEFERRED_ROUTINE)pHunterContext->
         NTOS_ROUTINES.pKiBalanceSetManagerDeferredRoutine;
-
     pHunterContext->
         NTOS_ITEMS.pKiBalanceSetManagerPeriodicDpc->DeferredContext =
         (VOID*)pHunterContext->
         NTOS_ITEMS.pKiBalanceSetManagerPeriodicEvent;
 
-    if (HR_ERROR(MemSetRomData(
-        (UINT8*)pHunterContext->NTOS_ITEMS.pPgGlobalContext,
-        0,
-        8))) {
-        DbgLog(DBG_ABORTED_PREFIX
-               "NTOS item processing failed.\n");
-        DbgLog(DBG_ABORTED_PREFIX
-               "NTOS item: 0x%I64X\n",
-               pHunterContext->NTOS_ITEMS.pPgGlobalContext);
-        DBG_BREAK;
-        goto aborted;
-    }
-
-    if (HR_ERROR(MemSetRomData(
-        (UINT8*)pHunterContext->NTOS_ITEMS.pPgCheckTimerIDT,
-        MAXUINT32,
-        8))) {
-        DbgLog(DBG_ABORTED_PREFIX
-               "NTOS item processing failed.\n");
-        DbgLog(DBG_ABORTED_PREFIX
-               "NTOS item: 0x%I64X\n",
-               pHunterContext->NTOS_ITEMS.pPgCheckTimerIDT);
-        DBG_BREAK;
-        goto aborted;
-    }
-
-    if (HR_ERROR(MemSetRomData(
-        (UINT8*)pHunterContext->NTOS_ITEMS.pPgCheckTimerSSDT,
-        MAXUINT32,
-        8))) {
-        DbgLog(DBG_ABORTED_PREFIX
-               "NTOS item processing failed.\n");
-        DbgLog(DBG_ABORTED_PREFIX
-               "NTOS item: 0x%I64X\n",
-               pHunterContext->NTOS_ITEMS.pPgCheckTimerSSDT);
-        DBG_BREAK;
-        goto aborted;
-    }
+    _InterlockedExchange64(
+        (volatile LONG64*)
+        pHunterContext->NTOS_ITEMS.pPgGlobalContext,
+        0);
+    _InterlockedExchange(
+        (volatile LONG*)
+        pHunterContext->NTOS_ITEMS.pPgCheckTimerIDT,
+        MAXUINT32);
+    _InterlockedExchange(
+        (volatile LONG*)
+        pHunterContext->NTOS_ITEMS.pPgCheckTimerSSDT,
+        MAXUINT32);
 
     DbgLog(DBG_SUCCESS_PREFIX
-           "NTOS routines and items processed successfully.\n");
+           "NTOS fixes installed successfully.\n");
 
     pStartPgRecurseRoutine =
         (UINT8*)pHunterContext->NTOS_ROUTINES.pKiCustomRecurseRoutineX;
@@ -527,7 +472,7 @@ BsMain (
             (VOID*)&HkKiCustomRecurseRoutineX,
             pHunterContext))) {
             DbgLog(DBG_ABORTED_PREFIX
-                   "NTOS routine hook installation failed.\n");
+                   "Hook installation failed.\n");
             DbgLog(DBG_ABORTED_PREFIX
                    "NTOS routine: 0x%I64X\n",
                    pCurrentPgRecurseRoutine);
@@ -540,36 +485,36 @@ BsMain (
             (INT64)(*(INT32*)(pNextPgRecurseRoutine + 9));
     } while (pCurrentPgRecurseRoutine != pStartPgRecurseRoutine);
 
-    BsMainHookTargetId = BS_MAIN_HOOK_TARGET_BASE_ID;
+    BsHookTargetId = BS_HOOK_TARGET_BASE_ID;
 
-    for (UINT8 i = 0; i < BS_MAIN_HOOK_TARGET_COUNT; i++) {
-        BsMainHookTargetId += BS_MAIN_HOOK_TARGET_ID_OFFSET;
-        switch (BsMainHookTargetId) {
-        case BS_MAIN_HOOK_TARGET_KICUSTOMRECURSEROUTINEX_ID:
+    for (UINT8 i = 0; i < BS_HOOK_TARGET_COUNT; i++) {
+        BsHookTargetId += BS_HOOK_TARGET_ID_OFFSET;
+        switch (BsHookTargetId) {
+        case BS_HOOK_TARGET_KICUSTOMRECURSEROUTINEX_ID:
             continue;
         default:
             break;
         }
-        switch (BsMainHookTargetId) {
-        case BS_MAIN_HOOK_TARGET_KIEXECUTEALLDPCS_ID:
+        switch (BsHookTargetId) {
+        case BS_HOOK_TARGET_KIEXECUTEALLDPCS_ID:
             pHookTarget =
                 (VOID*)pHunterContext->
                 NTOS_ROUTINES.pKiExecuteAllDpcs;
             pHookRoutine = (VOID*)&HkKiExecuteAllDpcs;
             break;
-        case BS_MAIN_HOOK_TARGET_KIPROCESSEXPIREDTIMERLIST_ID:
+        case BS_HOOK_TARGET_KIPROCESSEXPIREDTIMERLIST_ID:
             pHookTarget =
                 (VOID*)pHunterContext->
                 NTOS_ROUTINES.pKiProcessExpiredTimerList;
             pHookRoutine = (VOID*)&HkKiProcessExpiredTimerList;
             break;
-        case BS_MAIN_HOOK_TARGET_KIEXPIRETIMER2_ID:
+        case BS_HOOK_TARGET_KIEXPIRETIMER2_ID:
             pHookTarget =
                 (VOID*)pHunterContext->
                 NTOS_ROUTINES.pKiExpireTimer2;
             pHookRoutine = (VOID*)&HkKiExpireTimer2;
             break;
-        case BS_MAIN_HOOK_TARGET_KIDELIVERAPC_ID:
+        case BS_HOOK_TARGET_KIDELIVERAPC_ID:
             pHookTarget =
                 (VOID*)pHunterContext->
                 NTOS_ROUTINES.pKiDeliverApc;
@@ -577,10 +522,10 @@ BsMain (
             break;
         default:
             DbgLog(DBG_ABORTED_PREFIX
-                   "Unknown hook target id.\n");
+                   "Unknown hook target ID.\n");
             DbgLog(DBG_ABORTED_PREFIX
-                   "Hook target id: 0x%I32X\n",
-                   BsMainHookTargetId);
+                   "Hook target ID: 0x%I32X\n",
+                   BsHookTargetId);
             DBG_BREAK;
             goto aborted;
         }
@@ -590,7 +535,7 @@ BsMain (
             (VOID*)pHookRoutine,
             pHunterContext))) {
             DbgLog(DBG_ABORTED_PREFIX
-                   "NTOS routine hook installation failed.\n");
+                   "Hook installation failed.\n");
             DbgLog(DBG_ABORTED_PREFIX
                    "NTOS routine: 0x%I64X\n",
                    pHookTarget);
@@ -600,32 +545,32 @@ BsMain (
     }
 
     DbgLog(DBG_SUCCESS_PREFIX
-           "NTOS routine hooks installed successfully.\n");
+           "Hooks installed successfully.\n");
 
-    BsMainEpiHookTargetId = BS_MAIN_EPI_HOOK_TARGET_BASE_ID;
+    BsEpiHookTargetId = BS_EPI_HOOK_TARGET_BASE_ID;
 
-    for (UINT8 i = 0; i < BS_MAIN_EPI_HOOK_TARGET_COUNT; i++) {
-        BsMainEpiHookTargetId += BS_MAIN_EPI_HOOK_TARGET_ID_OFFSET;
-        switch (BsMainEpiHookTargetId) {
-        case BS_MAIN_HOOK_TARGET_EPI_KEREMOVEPRIQUEUEEPI_ID:
+    for (UINT8 i = 0; i < BS_EPI_HOOK_TARGET_COUNT; i++) {
+        BsEpiHookTargetId += BS_EPI_HOOK_TARGET_ID_OFFSET;
+        switch (BsEpiHookTargetId) {
+        case BS_HOOK_TARGET_EPI_KEREMOVEPRIQUEUEEPI_ID:
             pEpiHookTarget =
                 (UINT64*)&pHunterContext->
                 NTOS_ROUTINES.pKeRemovePriQueueEpi[0];
             pEpiHookRoutine = (VOID*)&HkKeRemovePriQueueEpi;
             break;
-        case BS_MAIN_HOOK_TARGET_EPI_KEWAITFORSINGLEOBJECTEPI_ID:
+        case BS_HOOK_TARGET_EPI_KEWAITFORSINGLEOBJECTEPI_ID:
             pEpiHookTarget =
                 (UINT64*)&pHunterContext->
                 NTOS_ROUTINES.pKeWaitForSingleObjectEpi[0];
             pEpiHookRoutine = (VOID*)&HkWaitThreadEpi;
             break;
-        case BS_MAIN_HOOK_TARGET_EPI_KEWAITFORMULTIPLEOBJECTSEPI_ID:
+        case BS_HOOK_TARGET_EPI_KEWAITFORMULTIPLEOBJECTSEPI_ID:
             pEpiHookTarget =
                 (UINT64*)&pHunterContext->
                 NTOS_ROUTINES.pKeWaitForMultipleObjectsEpi[0];
             pEpiHookRoutine = (VOID*)&HkWaitThreadEpi;
             break;
-        case BS_MAIN_HOOK_TARGET_EPI_KEDELAYEXECUTIONTHREADEPI_ID:
+        case BS_HOOK_TARGET_EPI_KEDELAYEXECUTIONTHREADEPI_ID:
             pEpiHookTarget =
                 (UINT64*)&pHunterContext->
                 NTOS_ROUTINES.pKeDelayExecutionThreadEpi[0];
@@ -633,10 +578,10 @@ BsMain (
             break;
         default:
             DbgLog(DBG_ABORTED_PREFIX
-                   "Unknown hook target epi id.\n");
+                   "Unknown EPI hook target ID.\n");
             DbgLog(DBG_ABORTED_PREFIX
-                   "Hook target epi id: 0x%I32X\n",
-                   BsMainEpiHookTargetId);
+                   "EPI hook target ID: 0x%I32X\n",
+                   BsEpiHookTargetId);
             DBG_BREAK;
             goto aborted;
         }
@@ -648,7 +593,7 @@ BsMain (
                     (VOID*)pEpiHookRoutine,
                     pHunterContext))) {
                     DbgLog(DBG_ABORTED_PREFIX
-                           "NTOS routine epi hook installation failed.\n");
+                           "EPI hook installation failed.\n");
                     DbgLog(DBG_ABORTED_PREFIX
                            "NTOS routine: 0x%I64X\n",
                             pEpiHookTarget[i2]);
@@ -658,6 +603,9 @@ BsMain (
             }
         }
     }
+
+    DbgLog(DBG_SUCCESS_PREFIX
+           "EPI hooks installed successfully.\n");
 
     if (HR_ERROR(HrInitHunterExportTable(
         pHunterContext,
@@ -711,7 +659,7 @@ aborted:
         }
 
         HkCustomBugCheckAsm64(
-            BS_MAIN_INITIALIZATION_ABORTED,
+            BS_INITIALIZATION_ABORTED,
             (VOID*)StackHighLimit,
             pKeBugCheckEx);
     }

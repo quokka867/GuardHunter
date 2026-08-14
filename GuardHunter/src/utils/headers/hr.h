@@ -11,9 +11,10 @@
 
 EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 
-#define DECRYPT_ASM_STUB_MAXSIZE 256
+#define DECRYPT_ASM_STUB_MAXSIZE 640
 
 typedef struct _HR_EXPORT_TABLE {
+    VOID (FASTCALL *pDecryptStub) (VOID);
     UINT8 DecryptAsmStub[DECRYPT_ASM_STUB_MAXSIZE];
     struct {
         struct {

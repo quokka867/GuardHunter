@@ -106,8 +106,6 @@ FltIsWhiteRoutine(
     UINT16 EntryCount =
         g_FltWhiteTableData.EntryCount;
 
-    KeMemoryBarrier();
-
     BOOLEAN EntryFound = FALSE;
 
     for (UINT16 i = 0; i < EntryCount; i++) {
@@ -196,8 +194,6 @@ FltRegisterWhiteRoutine(
         pWhiteTableNewEntry->RoutineBase = RoutineBase;
         pWhiteTableNewEntry->RoutineEnd = RoutineEnd;
 
-        KeMemoryBarrier();
-
         g_FltWhiteTableData.EntryCount++;
     }
 
@@ -219,16 +215,22 @@ aborted:
     return HR_SUCCESS;
 }
 
-#define PG_CODE_PATTERN_COUNT 1
+#define PG_CODE_PATTERN_COUNT 4
 #define PG_CODE_FRAGMENTED_PATTERN_COUNT 1
 
 #define PG_CODE_FRAGMENTED_PATTERN_INSTANCE \
 ((CONST VOID*)0xB6052E895E563F23UI64)
 
 CONST VOID *g_pPgCodePattern[PG_CODE_PATTERN_COUNT] = {
-    "\x01\x20\x00\x04\x80\x00\x10\x70"
+    "\x01\x20\x00\x04\x80\x00\x10\x70",
+    "\xE8\xB4\xC8\x91\x58\x3F\xA0\xA3",
+    "\x15\x34\x45\xE4\xDE\x4B\xB7\xB3",
+    "\x2E\x48\x31\x11\x48\x31\x51\x08"
 };
 CONST VOID *g_pPgCodeMask[PG_CODE_PATTERN_COUNT] = {
+    _sx _sx _sx _sx _sx _sx _sx _sx,
+    _sx _sx _sx _sx _sx _sx _sx _sx,
+    _sx _sx _sx _sx _sx _sx _sx _sx,
     _sx _sx _sx _sx _sx _sx _sx _sx
 };
 CONST VOID *g_pPgCodeFragmentedPattern[] = {

@@ -21,20 +21,6 @@ endif
 
 _TEXT segment PARA 'CODE'
 
-IF DBG
-    SS_PROTECT MACRO src
-        mov     ss,src
-    ENDM
-    DR7_PROTECT MACRO src
-        mov     dr7,src
-    ENDM
-ELSE
-    SS_PROTECT MACRO src
-    ENDM
-    DR7_PROTECT MACRO src
-    ENDM
-ENDIF
-
 ; ***
 ; * Routine Description:
 ; *
@@ -188,22 +174,22 @@ HkCustomBugCheckAsm64 proc
         DR7_PROTECT rax
 
         SS_PROTECT r14w
+        mov     ebx,00Fh
+
+        SS_PROTECT r14w
+        mov     cr8,rbx
+
+        SS_PROTECT r14w
         mov     rbx,rdx
 
         SS_PROTECT r14w
         sub     rbx,rsp
 
         SS_PROTECT r14w
+        shr     bx,3
+
+        SS_PROTECT r14w
         mov     rdi,rsp
-
-        SS_PROTECT r14w
-        lea     rsp,[rdx - 56]  
-
-        SS_PROTECT r14w
-        shr     ebx,3
-
-        SS_PROTECT r14w
-        xor     eax,eax
 
         SS_PROTECT r14w
         mov     r15d,ecx

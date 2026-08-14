@@ -422,7 +422,7 @@ PeTruncateImageHeaders(
 * Routine Description:
 *
 *     This routine truncates the
-*     PE32+ headers of the specified image.
+*     PE headers of the specified image.
 *
 * Arguments:
 *

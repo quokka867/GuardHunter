@@ -10,7 +10,7 @@
 // Debug definitions.
 //
 
-#define DBG  1
+#define DBG 1
 
 #define DBG_SUCCESS_PREFIX "GuardHunter [+] "
 #define DBG_ABORTED_PREFIX "GuardHunter [-] "
@@ -86,9 +86,6 @@ PTE_64_WRITE_FLAG)
 //
 // CPU definitions.
 //
-
-#define IS_INTERRUPTS_ENABLED \
-((BOOLEAN)(EFLAGS_INTERRUPT_ENABLE_FLAG(__readeflags())))
 
 #define IS_WRITE_PROTECTION_ENABLED \
 ((BOOLEAN)(CR0_WRITE_PROTECT(__readcr0())))
@@ -1090,6 +1087,8 @@ typedef struct _HR_CONTEXT {
         VOID *pCcBcbProfiler2;
         VOID *pKiDispatchCallout;
         VOID *pKiSwInterruptDispatch;
+        VOID *pKiDecodeMcaFault;
+        VOID *pFsRtlUninitializeSmallMcb;
         VOID *pKiErrata671Present;
     } NTOS_ROUTINES;
     struct {

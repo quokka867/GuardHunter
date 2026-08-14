@@ -15,7 +15,7 @@
 // Declarations of items from *base.c*.
 //
 
-#define BS_MAIN_INITIALIZATION_ABORTED 0xD38FF4A1UI32
+#define BS_INITIALIZATION_ABORTED 0xD38FF4A1UI32
 
 extern
 HR_EXPORT_TABLE*

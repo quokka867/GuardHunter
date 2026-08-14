@@ -167,7 +167,7 @@ HrInitHunterExportTable(
 
     pHunterContext->HR_API.pRtlRandomEx(&Seed);
     if (HR_ERROR(CryFillBufferRandomDword(
-        (UINT32*)pHrExportTable,
+        (UINT32*)pHrExportTable->DecryptAsmStub,
         DECRYPT_ASM_STUB_MAXSIZE / 4,
         Seed))) {
         DBG_BREAK;
@@ -175,14 +175,14 @@ HrInitHunterExportTable(
     }
 
     memmove(
-        pHrExportTable,
+        pHrExportTable->DecryptAsmStub,
         DecryptAsmStubInfo.pStubBase,
         DecryptAsmStubInfo.StubSize);
 
     StubLowPaddingSize =
         8 - (DecryptAsmStubInfo.StubSize % 8);
 
-    ExportTableDataBase = ((UINT64)pHrExportTable) +
+    ExportTableDataBase = ((UINT64)pHrExportTable->DecryptAsmStub) +
         (DecryptAsmStubInfo.StubSize + StubLowPaddingSize);
 
     ExportTableDataEnd = (UINT64)(pHrExportTable + 1);
@@ -190,17 +190,20 @@ HrInitHunterExportTable(
     ExportTableDataQwordCount =
         (UINT16)((ExportTableDataEnd - ExportTableDataBase) / 8);
 
-    *(UINT64*)((UINT8*)pHrExportTable +
+    *(UINT64*)(((UINT8*)pHrExportTable->DecryptAsmStub) +
         DecryptAsmStubInfo.OffsetDataPtr) =
         ExportTableDataBase;
 
-    *(UINT32*)((UINT8*)pHrExportTable +
+    *(UINT32*)(((UINT8*)pHrExportTable->DecryptAsmStub) +
         DecryptAsmStubInfo.OffsetQwordCount) =
         ExportTableDataQwordCount;
 
-    *(UINT64*)((UINT8*)pHrExportTable +
+    *(UINT64*)(((UINT8*)pHrExportTable->DecryptAsmStub) +
         DecryptAsmStubInfo.OffsetXorKey) =
         _byteswap_uint64(ExportTableDataKey = QUICK_XOR64(__rdtsc()));
+
+    pHrExportTable->pDecryptStub =
+        (VOID(FASTCALL*)(VOID))pHrExportTable->DecryptAsmStub;
 
     pHrExportTable->FLTMGR.API.pFltMgrInitFilterCallback =      
         &FltMgrInitFilterCallback;
@@ -224,6 +227,7 @@ HrInitHunterExportTable(
     
     for (UINT16 i = 0; i < ExportTableDataQwordCount; i++) {
         ((UINT64*)ExportTableDataBase)[i] ^= ExportTableDataKey;
+        ExportTableDataKey = _rotl64(ExportTableDataKey, 8);
     }
 
     pHunterContext->HR_API.pRtlRandomEx(&Seed);
@@ -513,8 +517,6 @@ HrReadCriticalTableQword(
 *
 --*/
 {
-    BOOLEAN CurrentIF = FALSE;
-
     CRITICAL_TABLE StackCriticalTable = { 0 };
 
     BOOLEAN CheckStatus = FALSE;
@@ -531,9 +533,7 @@ HrReadCriticalTableQword(
         goto aborted;
     }
 
-    if ((CurrentIF = IS_INTERRUPTS_ENABLED)) {
-        _disable();
-    }
+    _disable();
 
     while (_interlockedbittestandset(
         (volatile LONG*)&g_CriticalTableLock,
@@ -592,23 +592,21 @@ aborted:
 
     RtlSecureZeroMemory(&StackCriticalTable, sizeof(CRITICAL_TABLE));
 
-    if (pCriticalTablePte) {
+    if (pCriticalTable) {
         pCriticalTablePte->Valid = 0;
         pCriticalTablePte->PageFrameNumber = 0;
         __invlpg(pCriticalTable);
-    }
 
-    pCriticalTable = NULL;
-    pCriticalTablePte = NULL;
-    CriticalTablePfn = 0;
+        pCriticalTable    = NULL;
+        pCriticalTablePte = NULL;
+        CriticalTablePfn  = 0;
+    }
 
     if (IsLocked) {
         _InterlockedExchange(
             (volatile LONG*)&g_CriticalTableLock,
             0);
-        if (CurrentIF) {
-            _enable();
-        }
+        _enable();
     }
 
     if (IsAborted) {
