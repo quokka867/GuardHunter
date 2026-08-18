@@ -10,6 +10,10 @@ GuardHunter is an NT kernel module that serves as a highly effective solution fo
 
 - Under Secure Boot, the module must be loaded into the kernel via manual mapping.
 
+## Recommendations
+
+- The module must be initialized within approximately 2 minutes and 10 seconds of system startup to prevent potential desynchronization that would result in bug check 0x109 (CRITICAL_STRUCTURE_CORRUPTION).
+
 ## Tested Windows Builds
 
 The module was successfully tested on Windows builds:
