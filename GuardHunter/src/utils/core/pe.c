@@ -416,7 +416,8 @@ PeFindSectionMemoryPattern(
 HR_STATUS
 FASTCALL
 PeTruncateImageHeaders(
-    IN VOID *pImageBase
+    IN VOID *pImageBase,
+    IN HR_CONTEXT *pHunterContext
 )
 /*++
 * Routine Description:
@@ -454,7 +455,8 @@ PeTruncateImageHeaders(
     if (HR_ERROR(MemSetRomData(
         pImageBase,
         0,
-        SectionsLowVa - (UINT64)pImageBase))) {
+        (SectionsLowVa - (UINT64)pImageBase),
+        pHunterContext))) {
         DBG_BREAK;
         return HR_ABORTED;
     }

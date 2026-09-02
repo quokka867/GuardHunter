@@ -364,8 +364,8 @@ InitGetPatternData(
             pPatternData->EpiloguePatternCount = 0;
             break;
         case NTOS_PATTERN_DATA_KIPROCESSEXPIREDTIMERLIST_ID:
-            pPatternData->pBodyPrimaryPattern = "\x45\x00\x00\x44\x89\x00\x00\x0F\x57\x00\x4C\x89\x00\x00\x0F\x57\x00\x48\x89\x00\x00\x00\x48";
-            pPatternData->pBodyPrimaryMask    = _x _0 _0 _x _x _0 _0 _x _x _0 _x _x _0 _0 _x _x _0 _x _x _0 _0 _0 _x;
+            pPatternData->pBodyPrimaryPattern = "\x8D\x00\x01\x83\x00\x0F\x41\x89\x00\x48\x8D\x00\x00\x49\x8D\x00\x00\x48\x00\x20\x03\x00\x00\x80\xF7\xFF\xFF";
+            pPatternData->pBodyPrimaryMask    = _x _0 _x _x _0 _x _x _x _0 _x _x _0 _0 _x _x _0 _0 _x _0 _x _x _x _x _x _x _x _x;
 
             pPatternData->pBodyFallbackPattern[0] = "\xFF\x00\x49\x87\x00\x00\x48\x85\x00\x74\x00\xF0\x0F\xBA\x00\x00\x00\x00\x00\x0F\x82";
             pPatternData->pBodyFallbackMask[0]    = _x _0 _x _x _0 _0 _x _x _0 _x _0 _x _x _x _0 _0 _0 _0 _0 _x _x;
@@ -431,32 +431,32 @@ InitGetPatternData(
             pPatternData->FallbackSectionName[0] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
             pPatternData->FallbackSectionName[1] = QUICK_XOR64(NTOS_TEXT_SECTION_NAME);
 
-            pPatternData->pEpiloguePattern[0] = "\xC3\xCC\x44\x0F\x20\x00\x00\x00\x00\x00\x00";
-            pPatternData->pEpilogueMask[0]    = _x _x _x _x _x _0 _0 _0 _0 _x _x;
+            pPatternData->pEpiloguePattern[0] = "\xC3\xCC";
+            pPatternData->pEpilogueMask[0]    = _x _x;
 
             pPatternData->BodyFallbackPatternCount = 2;
 
             pPatternData->EpiloguePatternCount = 1;
             break;
         case NTOS_PATTERN_DATA_KEWAITFORSINGLEOBJECT_EPI_ID:
-            pPatternData->pEpiloguePattern[0] = "\xC3\xCC\x66\x66\x66\x0F";
-            pPatternData->pEpilogueMask[0]    = _x _x _x _x _x _x;
+            pPatternData->pEpiloguePattern[0] = "\xC3\xCC";
+            pPatternData->pEpilogueMask[0]    = _x _x;
 
             pPatternData->BodyFallbackPatternCount = 0;
 
             pPatternData->EpiloguePatternCount = 1;
             break;
         case NTOS_PATTERN_DATA_KEWAITFORMULTIPLEOBJECTS_EPI_ID:
-            pPatternData->pEpiloguePattern[0] = "\xC3\xCC\x83\x00\x00\x77";
-            pPatternData->pEpilogueMask[0]    = _x _x _x _0 _0 _x;
+            pPatternData->pEpiloguePattern[0] = "\xC3\xCC";
+            pPatternData->pEpilogueMask[0]    = _x _x;
 
             pPatternData->BodyFallbackPatternCount = 0;
 
             pPatternData->EpiloguePatternCount = 1;
             break;
         case NTOS_PATTERN_DATA_KEDELAYEXECUTIONTHREAD_EPI_ID:
-            pPatternData->pEpiloguePattern[0] = "\xC3\xCC\x48\x89\x00\x24\x00\x00\x00\x00";
-            pPatternData->pEpilogueMask[0]    = _x _x _x _x _0 _x _0 _0 _x _x;
+            pPatternData->pEpiloguePattern[0] = "\xC3\xCC";
+            pPatternData->pEpilogueMask[0]    = _x _x;
 
             pPatternData->BodyFallbackPatternCount = 0;
 
@@ -940,8 +940,7 @@ InitHunterContext(
         (ImageBase + pFunctionEntry->BeginAddress);
 
     if (!(pHunterContext = pMmAllocateIndependentPagesEx(
-        REQUIRED_NUMBER_OF_PAGES(sizeof(HR_CONTEXT))
-        << PAGE_SHIFT,
+        SIZE_OF_PAGES(sizeof(HR_CONTEXT)),
         (UINT32)-1,
         NULL,
         0))) {
@@ -1104,12 +1103,12 @@ InitHunterContext(
             DBG_BREAK;
             goto aborted;
         } else if (!(*pSelectedItem)) {
-            DbgLog(DBG_WARNING_PREFIX,
+            DbgLog(DBG_WARNING_PREFIX
                    "Primary pattern not found.\n");
-            DbgLog(DBG_WARNING_PREFIX,
+            DbgLog(DBG_WARNING_PREFIX
                    "Pattern ID: 0x%I32X\n",
                    CurrentPatternId);
-            DbgLog(DBG_WARNING_PREFIX,
+            DbgLog(DBG_WARNING_PREFIX
                    "Switch to searching for fallback patterns...\n");
             for (UINT8 i2 = 0;
                 i2 < NtosPatternData.BodyFallbackPatternCount; i2++) {
@@ -1123,16 +1122,16 @@ InitHunterContext(
                     DBG_BREAK;
                     goto aborted;
                 } else if (*pSelectedItem) {
-                    DbgLog(DBG_SUCCESS_PREFIX,
+                    DbgLog(DBG_SUCCESS_PREFIX
                            "Fallback pattern found.\n");
-                    DbgLog(DBG_SUCCESS_PREFIX,
+                    DbgLog(DBG_SUCCESS_PREFIX
                            "Fallback pattern IDX: 0x%02X\n",
                            i2);
                     break;
                 }
             }
             if (!(*pSelectedItem)) {
-                DbgLog(DBG_ABORTED_PREFIX,
+                DbgLog(DBG_ABORTED_PREFIX
                        "Fallback pattern not found.\n");
                 DBG_BREAK;
                 goto aborted;
@@ -1356,7 +1355,7 @@ InitHunterContext(
     }
 
     if (!(pKdDataBlock = pMmAllocateIndependentPagesEx(
-        REQUIRED_NUMBER_OF_PAGES(sizeof(KDDEBUGGER_DATA64)) << PAGE_SHIFT,
+        SIZE_OF_PAGES(sizeof(KDDEBUGGER_DATA64)),
         (UINT32)-1,
         NULL,
         0))) {
@@ -1411,7 +1410,7 @@ InitHunterContext(
 
     pHunterContext->HR_API.pMmFreeIndependentPages(
         pKdDataBlock,
-        REQUIRED_NUMBER_OF_PAGES(sizeof(KDDEBUGGER_DATA64)) << PAGE_SHIFT);
+        SIZE_OF_PAGES(sizeof(KDDEBUGGER_DATA64)));
 
     pKdDataBlock = NULL;
 
@@ -1442,11 +1441,10 @@ InitHunterContext(
         ((ContextHighPaddingSize & 0x3FF) + 0x401) & ~0x07;
 
     if (!(pContextLowPaddingBase = pMmAllocateIndependentPagesEx(
-        REQUIRED_NUMBER_OF_PAGES(
+        SIZE_OF_PAGES(
         ContextLowPaddingSize +
         sizeof(HR_CONTEXT) +
-        ContextHighPaddingSize)
-        << PAGE_SHIFT,
+        ContextHighPaddingSize),
         (UINT32)-1,
         NULL,
         0))) {
@@ -1465,7 +1463,7 @@ InitHunterContext(
 
     pHunterContext2->HR_API.pMmFreeIndependentPages(
         pHunterContext,
-        REQUIRED_NUMBER_OF_PAGES(sizeof(HR_CONTEXT)) << PAGE_SHIFT);
+        SIZE_OF_PAGES(sizeof(HR_CONTEXT)));
 
     pHunterContext = NULL;
 
@@ -1519,16 +1517,14 @@ aborted:
                 ActiveContextAllocSize);
             pMmFreeIndependentPages(
                 pActiveContextAllocBase,
-                REQUIRED_NUMBER_OF_PAGES(ActiveContextAllocSize)
-                << PAGE_SHIFT);
+                SIZE_OF_PAGES(ActiveContextAllocSize));
             if (pKdDataBlock) {
                 RtlSecureZeroMemory(
                     pKdDataBlock,
                     sizeof(KDDEBUGGER_DATA64));
                 pMmFreeIndependentPages(
                     pKdDataBlock,
-                    REQUIRED_NUMBER_OF_PAGES(sizeof(KDDEBUGGER_DATA64))
-                    << PAGE_SHIFT);
+                    SIZE_OF_PAGES(sizeof(KDDEBUGGER_DATA64)));
             }
         }
         return HR_ABORTED;

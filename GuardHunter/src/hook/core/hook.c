@@ -320,7 +320,8 @@ HkInstallRoutineHookIpi(
         MemWriteRomData(
             pInstallHookContext->pHookContext->pTrampolineBase,
             TrampolineBody,
-            6 + pInstallHookContext->pHookContext->NopPaddingSize);
+            6 + pInstallHookContext->pHookContext->NopPaddingSize,
+            pInstallHookContext->pHunterContext);
 
     aborted2:
 
@@ -456,12 +457,11 @@ HkInstallRoutineHook(
 
     if (!(pStubLowPaddingBase =
         pHunterContext->HR_API.pMmAllocateIndependentPagesEx(
-            REQUIRED_NUMBER_OF_PAGES(StubLowPaddingSize +
+            SIZE_OF_PAGES(StubLowPaddingSize +
             HookAsmStubInfo.StubSize +
             HookContext.RestoreInstructionsSize +
             sizeof(TrampolineReturnBody) +
-            StubHighPaddingSize)
-            << PAGE_SHIFT,
+            StubHighPaddingSize),
             (UINT32)-1,
             NULL,
             0))) {
@@ -511,11 +511,10 @@ HkInstallRoutineHook(
 
     if (!(pStubHrCtxLowPaddingBase =
         pHunterContext->HR_API.pMmAllocateIndependentPagesEx(
-            REQUIRED_NUMBER_OF_PAGES(
+            SIZE_OF_PAGES(
             StubHrCtxLowPaddingSize +
             sizeof(HR_CONTEXT) +
-            StubHrCtxHighPaddingSize)
-            << PAGE_SHIFT,
+            StubHrCtxHighPaddingSize),
             (UINT32)-1,
             NULL,
             0))) {
@@ -577,11 +576,10 @@ HkInstallRoutineHook(
 
     if (NT_ERROR(pHunterContext->HR_API.pMmSetPageProtection(
         pStubHrCtxLowPaddingBase,
-        REQUIRED_NUMBER_OF_PAGES(
+        SIZE_OF_PAGES(
         StubHrCtxLowPaddingSize +
         sizeof(HR_CONTEXT) +
-        StubHrCtxHighPaddingSize)
-        << PAGE_SHIFT,
+        StubHrCtxHighPaddingSize),
         PAGE_READONLY))) {
         DBG_BREAK;
         goto aborted;
@@ -616,20 +614,20 @@ HkInstallRoutineHook(
     if (HR_ERROR(MemWriteRomData(
         (UINT8*)pPatternBase,
         (VOID*)&pStubBase,
-        8))) {
+        8,
+        pHunterContext))) {
         DBG_BREAK;
         goto aborted;
     }
 
     if (NT_ERROR(pHunterContext->HR_API.pMmSetPageProtection(
         pStubLowPaddingBase,
-        REQUIRED_NUMBER_OF_PAGES(
+        SIZE_OF_PAGES(
         StubLowPaddingSize +
         HookAsmStubInfo.StubSize +
         HookContext.RestoreInstructionsSize +
         sizeof(TrampolineReturnBody) +
-        StubHighPaddingSize)
-        << PAGE_SHIFT,
+        StubHighPaddingSize),
         PAGE_EXECUTE_READ))) {
         DBG_BREAK;
         goto aborted;
@@ -643,11 +641,10 @@ HkInstallRoutineHook(
             ALL_PROCESSOR_GROUPS);
 
     for (UINT8 i = 0; i < HOOK_INSTALL_ATTEMPT_MAXCOUNT; i++) {
-        for (UINT8 i2 = 0;
-            i2 < (sizeof(InstallHookContext.CoreSyncBarrier) / 4); i2++) {
-            InstallHookContext.CoreSyncBarrier[i2] =
-                InstallHookContext.ActiveLogicalCoreCount;
-        }
+        __stosd(
+            (PULONG)&InstallHookContext.CoreSyncBarrier,
+            InstallHookContext.ActiveLogicalCoreCount,
+            (sizeof(InstallHookContext.CoreSyncBarrier) / 4));
         InstallHookContext.Status = HR_SUCCESS;
         pHunterContext->HR_API.pKeIpiGenericCall(
             (KIPI_BROADCAST_WORKER*)&HkInstallRoutineHookIpi,
@@ -680,13 +677,12 @@ aborted:
                     StubHighPaddingSize));
                 pHunterContext->HR_API.pMmFreeIndependentPages(
                     pStubLowPaddingBase,
-                    REQUIRED_NUMBER_OF_PAGES(
+                    SIZE_OF_PAGES(
                     StubLowPaddingSize +
                     HookAsmStubInfo.StubSize +
                     HookContext.RestoreInstructionsSize +
                     sizeof(TrampolineReturnBody) +
-                    StubHighPaddingSize)
-                    << PAGE_SHIFT);
+                    StubHighPaddingSize));
             }
             if (pStubHunterContext) {
                 RtlSecureZeroMemory(
@@ -696,11 +692,10 @@ aborted:
                     StubHrCtxHighPaddingSize));
                 pHunterContext->HR_API.pMmFreeIndependentPages(
                     pStubHrCtxLowPaddingBase,
-                    REQUIRED_NUMBER_OF_PAGES(
+                    SIZE_OF_PAGES(
                     (StubHrCtxLowPaddingSize +
                     sizeof(HR_CONTEXT) +
-                    StubHrCtxHighPaddingSize))
-                    << PAGE_SHIFT);
+                    StubHrCtxHighPaddingSize)));
             }
         }
         return HR_ABORTED;

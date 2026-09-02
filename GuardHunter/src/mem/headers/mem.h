@@ -12,7 +12,8 @@ FASTCALL
 MemWriteRomData(
     OUT UINT8 *pDest,
     IN  CONST UINT8 *pSrc,
-    IN  UINT64 SrcSize
+    IN  UINT64 SrcSize,
+    IN  HR_CONTEXT *pHunterContext
 );
 
 extern
@@ -21,7 +22,8 @@ FASTCALL
 MemSetRomData(
     OUT UINT8 *pDest,
     IN  UINT32 Src,
-    IN  UINT64 SrcSize
+    IN  UINT64 SrcSize,
+    IN  HR_CONTEXT *pHunterContext
 );
 
 extern

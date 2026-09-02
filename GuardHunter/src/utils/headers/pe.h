@@ -53,6 +53,7 @@ extern
 HR_STATUS
 FASTCALL
 PeTruncateImageHeaders(
-    IN VOID *pImageBase
+    IN VOID *pImageBase,
+    IN HR_CONTEXT *pHunterContext
 );
 

@@ -124,7 +124,7 @@ HrInitHunterExportTable(
     if (!(pTableLowPaddingBase =
         (UINT32*)
         pHunterContext->HR_API.pMmAllocateIndependentPagesEx(
-            REQUIRED_NUMBER_OF_PAGES(
+            SIZE_OF_PAGES(
             (TableLowPaddingSize +
             sizeof(HR_EXPORT_TABLE) +
             TableHighPaddingSize))
@@ -144,11 +144,10 @@ HrInitHunterExportTable(
 
     if (NT_ERROR(pHunterContext->HR_API.pMmSetPageProtection(
         pTableLowPaddingBase,
-        REQUIRED_NUMBER_OF_PAGES(
+        SIZE_OF_PAGES(
         (TableLowPaddingSize +
         sizeof(HR_EXPORT_TABLE) +
-        TableHighPaddingSize))
-        << PAGE_SHIFT,
+        TableHighPaddingSize)),
         PAGE_EXECUTE_READWRITE))) {
         DBG_BREAK;
         goto aborted;
@@ -263,11 +262,10 @@ aborted:
                 TableHighPaddingSize));
             pHunterContext->HR_API.pMmFreeIndependentPages(
                 pHrExportTable,
-                REQUIRED_NUMBER_OF_PAGES(
+                SIZE_OF_PAGES(
                 (TableLowPaddingSize +
                 sizeof(HR_EXPORT_TABLE) +
-                TableHighPaddingSize))
-                << PAGE_SHIFT);
+                TableHighPaddingSize)));
         }
 
         return HR_ABORTED;
@@ -324,7 +322,7 @@ HrInitCriticalTable(
         goto aborted;
     }
 
-    OldIrql = pHunterContext->HR_API.pKzRaiseIrql(DISPATCH_LEVEL);
+    OldIrql = pHunterContext->HR_API.pKzRaiseIrql(HIGH_LEVEL);
 
     while (_interlockedbittestandset(
         (volatile LONG*)&g_CriticalTableLock,

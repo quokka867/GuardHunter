@@ -16,13 +16,13 @@
 #define DBG_ABORTED_PREFIX "GuardHunter [-] "
 #define DBG_WARNING_PREFIX "GuardHunter [!] "
 
-#define DbgLog(fmt, ...)    \
+#define DbgLog(Format, ...)    \
 do {                        \
     if (DBG) {              \
         DbgPrintEx(         \
         DPFLTR_SYSTEM_ID,   \
         DPFLTR_ERROR_LEVEL, \
-        fmt,                \
+        Format,             \
         ##__VA_ARGS__);     \
     }                       \
 } while (FALSE)
@@ -48,21 +48,26 @@ do {                                       \
 typedef UINT32 HR_STATUS;
 #define HR_SUCCESS 0x02FC9E0AUI32
 #define HR_ABORTED 0xA9F34231UI32
-#define HR_ERROR(status) ((status) != HR_SUCCESS)
+#define HR_ERROR(Status) ((Status) != HR_SUCCESS)
 
 //
 // Quick obfuscation definitions.
 //
 
-#define QUICK_XOR64(Value) (((UINT64)(Value)) ^ 0xA38E4B46EF9F8246UI64)
-#define QUICK_XOR32(Value) (((UINT32)(Value)) ^ 0x6B849270UI32)
+#define QUICK_XOR64(Source) \
+(((UINT64)(Source)) ^ 0xA38E4B46EF9F8246UI64)
+#define QUICK_XOR32(Source) \
+(((UINT32)(Source)) ^ 0x6B849270UI32)
 
 //
 // Memory management definitions.
 //
 
-#define REQUIRED_NUMBER_OF_PAGES(Size) \
-((((PAGE_SIZE - 1) + (Size)) & ~(PAGE_SIZE - 1)) >> PAGE_SHIFT)
+#define SIZE_OF_PAGES(Size) \
+((0x0FFF + (Size)) & ~(0x0FFF))
+
+#define NUMBER_OF_PAGES(Size) \
+(SIZE_OF_PAGES(Size) >> PAGE_SHIFT)
 
 #define IS_RWX_TABLE_ENTRY(pPte) \
 ((*((UINT64*)(pPte)) & (PTE_64_WRITE_FLAG | PTE_64_EXECUTE_DISABLE_FLAG)) == \

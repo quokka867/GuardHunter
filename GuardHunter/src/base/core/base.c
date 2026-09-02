@@ -121,7 +121,7 @@ BS_EPI_HOOK_TARGET_ID_OFFSET)
 
 HR_EXPORT_TABLE*
 FASTCALL
-BsMain (
+BsMain(
     VOID
 )
 /*++
@@ -240,7 +240,8 @@ BsMain (
         "CR0 is not hyper-protected.\n");
 
     if (HR_ERROR(PeTruncateImageHeaders(
-        pHunterContext->NTOS_PROCESS.HR_IMAGE.pImageBase))) {
+        pHunterContext->NTOS_PROCESS.HR_IMAGE.pImageBase,
+        pHunterContext))) {
         DbgLog(DBG_ABORTED_PREFIX
                "Module PE headers truncation failed.\n");
         DBG_BREAK;
@@ -416,7 +417,8 @@ BsMain (
         if (HR_ERROR(MemWriteRomData(
             (UINT8*)pFixRoutine[i],
             RoutineExecuteFix,
-            sizeof(RoutineExecuteFix)))) {
+            sizeof(RoutineExecuteFix),
+            pHunterContext))) {
             DbgLog(DBG_ABORTED_PREFIX
                    "NTOS routine fix failed.\n");
             DbgLog(DBG_ABORTED_PREFIX
@@ -641,11 +643,10 @@ aborted:
                 HunterContextDesc.HighPaddingSize));
             pMmFreeIndependentPages(
                 HunterContextDesc.pAllocBase,
-                REQUIRED_NUMBER_OF_PAGES(
+                SIZE_OF_PAGES(
                 (HunterContextDesc.LowPaddingSize +
                 sizeof(HR_CONTEXT) +
-                HunterContextDesc.HighPaddingSize))
-                << PAGE_SHIFT);
+                HunterContextDesc.HighPaddingSize)));
             if (pFilterCallback) {
                 RtlSecureZeroMemory(
                     pFilterCallback,

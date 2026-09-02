@@ -1059,9 +1059,10 @@ HkKiCustomRecurseRoutineX(
 /*++
 * Routine Description:
 *
-*     This routine performs a partial emulation of
-*     longjmp to return execution to a
-*     legitimate kernel routine.
+*     This routine performs a rollback
+*     of the current execution context
+*     using stack unwinding information
+*     to return execution to a legitimate routine.
 *
 * Arguments:
 *

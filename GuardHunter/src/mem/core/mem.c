@@ -20,7 +20,8 @@ FASTCALL
 MemWriteRomData(
     OUT UINT8 *pDest,
     IN  CONST UINT8 *pSrc,
-    IN  UINT64 SrcSize
+    IN  UINT64 SrcSize,
+    IN  HR_CONTEXT *pHunterContext
 )
 /*++
 * Routine Description:
@@ -43,6 +44,8 @@ MemWriteRomData(
 *
 --*/
 {
+    KIRQL OldIrql = 0;
+
     BOOLEAN CurrentWP = FALSE;
 
     if (!pDest || !pSrc || !SrcSize) {
@@ -50,7 +53,7 @@ MemWriteRomData(
         return HR_ABORTED;
     }
 
-    _disable();
+    OldIrql = pHunterContext->HR_API.pKzRaiseIrql(HIGH_LEVEL);
 
     if ((CurrentWP = IS_WRITE_PROTECTION_ENABLED)) {
         __writecr0(__readcr0() & ~CR0_WRITE_PROTECT_FLAG);
@@ -62,7 +65,7 @@ MemWriteRomData(
         __writecr0(__readcr0() | CR0_WRITE_PROTECT_FLAG);
     }
 
-    _enable();
+    pHunterContext->HR_API.pKzLowerIrql(OldIrql);
 
     return HR_SUCCESS;
 }
@@ -72,7 +75,8 @@ FASTCALL
 MemSetRomData(
     OUT UINT8 *pDest,
     IN  UINT32 Src,
-    IN  UINT64 SrcSize
+    IN  UINT64 SrcSize,
+    IN  HR_CONTEXT *pHunterContext
 )
 /*++
 * Routine Description:
@@ -95,6 +99,8 @@ MemSetRomData(
 *
 --*/
 {
+    KIRQL OldIrql = 0;
+
     BOOLEAN CurrentWP = FALSE;
 
     if (!pDest || !SrcSize) {
@@ -102,7 +108,7 @@ MemSetRomData(
         return HR_ABORTED;
     }
 
-    _disable();
+    OldIrql = pHunterContext->HR_API.pKzRaiseIrql(HIGH_LEVEL);
 
     if ((CurrentWP = IS_WRITE_PROTECTION_ENABLED)) {
         __writecr0(__readcr0() & ~CR0_WRITE_PROTECT_FLAG);
@@ -148,7 +154,7 @@ success:
         __writecr0(__readcr0() | CR0_WRITE_PROTECT_FLAG);
     }
 
-    _enable();
+    pHunterContext->HR_API.pKzLowerIrql(OldIrql);
 
     return HR_SUCCESS;
 }
