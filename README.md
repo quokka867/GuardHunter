@@ -18,7 +18,7 @@ GuardHunter is an NT kernel module that serves as a highly effective solution fo
 
 The latest successfully tested build:
 
-- 26200.9278
+- 26200.9445
 
 ## Test Results
 
