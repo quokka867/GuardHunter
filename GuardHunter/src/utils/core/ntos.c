@@ -163,7 +163,7 @@ NtosWritePrcbQword(
 *
 --*/
 {
-    UINT64 pPrcb = 0;
+    UINT64 Prcb = 0;
 
     UINT64 *pQword = NULL;
 
@@ -171,18 +171,21 @@ NtosWritePrcbQword(
         goto aborted;
     }
 
-    pPrcb = __readgsqword(FIELD_OFFSET(KPCR, CurrentPrcb));
+    Prcb = __readgsqword(FIELD_OFFSET(KPCR, CurrentPrcb));
 
-    pQword = (UINT64*)(pPrcb + pWritePrcbQword->OffsetQword);
+    pQword = (UINT64*)(Prcb + pWritePrcbQword->OffsetQword);
 
     *pQword = pWritePrcbQword->Qword;
     
     if (pWritePrcbQword->IsIpi) {
         _InterlockedIncrement(
             (volatile LONG*)&pWritePrcbQword->IpiSuccessCount);
+    } else {
+        pWritePrcbQword->Status = HR_SUCCESS;
     }
 
 aborted:
 
     return;
 }
+

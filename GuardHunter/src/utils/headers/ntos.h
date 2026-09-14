@@ -10,9 +10,10 @@ typedef struct _WRITE_PRCB_QWORD {
     HR_CONTEXT *pHunterContext;
     UINT64 Qword;
     UINT16 OffsetQword;
+    UINT8 WritePrcbQwordPad0[5];
     BOOLEAN IsIpi;
-    UINT8 NtosWritePrcbQwordPad0[1];
     volatile UINT32 IpiSuccessCount;
+    UINT32 Status;
 } WRITE_PRCB_QWORD;
 
 extern

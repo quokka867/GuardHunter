@@ -54,10 +54,13 @@ typedef UINT32 HR_STATUS;
 // Quick obfuscation definitions.
 //
 
+#define QUICK_XOR64_KEY 0xA38E4B46EF9F8246UI64
 #define QUICK_XOR64(Source) \
-(((UINT64)(Source)) ^ 0xA38E4B46EF9F8246UI64)
+(((UINT64)(Source)) ^ QUICK_XOR64_KEY)
+
+#define QUICK_XOR32_KEY 0x6B849270UI32
 #define QUICK_XOR32(Source) \
-(((UINT32)(Source)) ^ 0x6B849270UI32)
+(((UINT32)(Source)) ^ QUICK_XOR32_KEY)
 
 //
 // Memory management definitions.
@@ -69,23 +72,25 @@ typedef UINT32 HR_STATUS;
 #define NUMBER_OF_PAGES(Size) \
 (SIZE_OF_PAGES(Size) >> PAGE_SHIFT)
 
+#define SYSTEM_VA_CANONICAL_MASK 0xFFFF000000000000UI64
+
 #define IS_RWX_TABLE_ENTRY(pPte) \
-((*((UINT64*)(pPte)) & (PTE_64_WRITE_FLAG | PTE_64_EXECUTE_DISABLE_FLAG)) == \
-PTE_64_WRITE_FLAG)
+((*((UINT64*)(pPte)) & \
+(PTE_64_WRITE_FLAG | PTE_64_EXECUTE_DISABLE_FLAG)) == PTE_64_WRITE_FLAG)
 
 #define IS_CANONICAL_SYSTEM_VA(Va) \
 (((((UINT64)(Va)) >> 47) & 0x1FFFF) == 0x1FFFF)
 
-#define GET_PML4_ENTRY_ADDRESS(PxeBase, Va) \
+#define GET_PXE_ADDRESS(PxeBase, Va) \
 (((UINT64)(PxeBase)) + ((((UINT64)(Va)) >> 36) & 0xFF8))
 
-#define GET_PDPT_ENTRY_ADDRESS(PpeBase, Va) \
+#define GET_PPE_ADDRESS(PpeBase, Va) \
 (((UINT64)(PpeBase)) + ((((UINT64)(Va)) >> 27) & 0x1FFFF8))
 
-#define GET_PD_ENTRY_ADDRESS(PdeBase, Va) \
+#define GET_PDE_ADDRESS(PdeBase, Va) \
 (((UINT64)(PdeBase)) + ((((UINT64)(Va)) >> 18) & 0x3FFFFFF8))
 
-#define GET_PT_ENTRY_ADDRESS(PteBase, Va) \
+#define GET_PTE_ADDRESS(PteBase, Va) \
 (((UINT64)(PteBase)) + ((((UINT64)(Va)) >> 9) & 0x7FFFFFFFF8))
 
 //
@@ -950,12 +955,12 @@ typedef struct _UNWIND_HISTORY_TABLE {
 
 #define EPILOGUE_MAXCOUNT 4
 
-#define MMU_PAGING_LEVELS 4
+#define MMU_LONG_PTE_BASE_IDX 0
+#define MMU_LONG_PDE_BASE_IDX 1
+#define MMU_LONG_PPE_BASE_IDX 2
+#define MMU_LONG_PXE_BASE_IDX 3
 
-#define HR_CONTEXT_PXE_BASE_IDX 0
-#define HR_CONTEXT_PPE_BASE_IDX 1
-#define HR_CONTEXT_PDE_BASE_IDX 2
-#define HR_CONTEXT_PTE_BASE_IDX 3
+#define MMU_LONG_PAGING_LEVELS 4
 
 typedef struct _HR_CONTEXT {
     UINT32 ContextHash32;
@@ -1099,7 +1104,7 @@ typedef struct _HR_CONTEXT {
     struct {
         UINT64 PfnDatabase;
 
-        UINT64 PteBases[MMU_PAGING_LEVELS];
+        UINT64 PteBase[MMU_LONG_PAGING_LEVELS];
 
         UINT64 *pKiWaitNever;
         UINT64 *pKiWaitAlways;

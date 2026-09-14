@@ -48,7 +48,7 @@ MemWriteRomData(
 
     BOOLEAN CurrentWP = FALSE;
 
-    if (!pDest || !pSrc || !SrcSize) {
+    if (!pDest || !pSrc || !SrcSize || !pHunterContext) {
         DBG_BREAK;
         return HR_ABORTED;
     }
@@ -103,7 +103,7 @@ MemSetRomData(
 
     BOOLEAN CurrentWP = FALSE;
 
-    if (!pDest || !SrcSize) {
+    if (!pDest || !SrcSize || !pHunterContext) {
         DBG_BREAK;
         return HR_ABORTED;
     }
@@ -419,7 +419,7 @@ MemIsSystemAddressValid(
 
     BOOLEAN IsAddressValid = TRUE;
 
-    if (!pHunterContext || !pVa || !pIsAddressValid) {
+    if (!pVa || !pIsAddressValid || !pHunterContext) {
         DBG_BREAK;
         return HR_ABORTED;
     }
@@ -483,32 +483,32 @@ MemGetPteAddressSafe(
         return HR_ABORTED;
     }
 
-    if (!(pPte = (MMPTE_HARDWARE*)GET_PML4_ENTRY_ADDRESS(
-        pHunterContext->NTOS_ITEMS.PteBases[HR_CONTEXT_PXE_BASE_IDX],
+    if (!(pPte = (MMPTE_HARDWARE*)GET_PXE_ADDRESS(
+        pHunterContext->NTOS_ITEMS.PteBase[MMU_LONG_PXE_BASE_IDX],
         pVa))->Valid) {
         pPte = NULL;
         goto success;
     } else if (pPte->LargePage) {
         goto success;
     }
-    if (!(pPte = (MMPTE_HARDWARE*)GET_PDPT_ENTRY_ADDRESS(
-        pHunterContext->NTOS_ITEMS.PteBases[HR_CONTEXT_PPE_BASE_IDX],
+    if (!(pPte = (MMPTE_HARDWARE*)GET_PPE_ADDRESS(
+        pHunterContext->NTOS_ITEMS.PteBase[MMU_LONG_PPE_BASE_IDX],
         pVa))->Valid) {
         pPte = NULL;
         goto success;
     } else if (pPte->LargePage) {
         goto success;
     }
-    if (!(pPte = (MMPTE_HARDWARE*)GET_PD_ENTRY_ADDRESS(
-        pHunterContext->NTOS_ITEMS.PteBases[HR_CONTEXT_PDE_BASE_IDX],
+    if (!(pPte = (MMPTE_HARDWARE*)GET_PDE_ADDRESS(
+        pHunterContext->NTOS_ITEMS.PteBase[MMU_LONG_PDE_BASE_IDX],
         pVa))->Valid) {
         pPte = NULL;
         goto success;
     } else if (pPte->LargePage) {
         goto success;
     }
-    if (!(pPte = (MMPTE_HARDWARE*)GET_PT_ENTRY_ADDRESS(
-        pHunterContext->NTOS_ITEMS.PteBases[HR_CONTEXT_PTE_BASE_IDX],
+    if (!(pPte = (MMPTE_HARDWARE*)GET_PTE_ADDRESS(
+        pHunterContext->NTOS_ITEMS.PteBase[MMU_LONG_PTE_BASE_IDX],
         pVa))->Valid) {
         pPte = NULL;
     }
