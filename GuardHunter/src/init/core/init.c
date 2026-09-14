@@ -841,8 +841,7 @@ InitHunterContext(
 
     KDDEBUGGER_DATA64 *pKdDataBlock = NULL;
 
-    UINT64 SelfReferencePml4eIdx = 0;
-    UINT64 AccPteBase = 0;
+    UINT64 SelfReferencePxeIdx = 0;
 
     UINT32 Seed = 0;
     UINT16 ContextLowPaddingSize = 0;
@@ -1368,40 +1367,44 @@ InitHunterContext(
     pHunterContext->NTOS_ITEMS.PfnDatabase =
         *((UINT64*)pKdDataBlock->MmPfnDatabase);
 
-    AccPteBase = pKdDataBlock->PteBase;
-    SelfReferencePml4eIdx = 
-        (AccPteBase >> (9 * (MMU_PAGING_LEVELS - 1))) & 0x1FF000;
-    pHunterContext->NTOS_ITEMS.PteBases[HR_CONTEXT_PTE_BASE_IDX] =
-        AccPteBase;
-    for (UINT8 i = 0, i2 = HR_CONTEXT_PDE_BASE_IDX;
-        i < (MMU_PAGING_LEVELS - 1); i++, i2--) {
-        AccPteBase += SelfReferencePml4eIdx << (9 * i2);
-        pHunterContext->NTOS_ITEMS.PteBases[i2] = AccPteBase;
-    }
+    pHunterContext->NTOS_ITEMS.PteBase[MMU_LONG_PTE_BASE_IDX] =
+        pKdDataBlock->PteBase;
 
+    SelfReferencePxeIdx =
+        (pKdDataBlock->PteBase & ~(SYSTEM_VA_CANONICAL_MASK));
+
+    for (UINT8 i = MMU_LONG_PDE_BASE_IDX;
+        i < MMU_LONG_PAGING_LEVELS; i++) {
+        pHunterContext->NTOS_ITEMS.PteBase[i] =
+            (pHunterContext->NTOS_ITEMS.PteBase[i - 1] +
+                (SelfReferencePxeIdx >> (9 * i)));
+    }
+    
     if (HR_ERROR(InitHunterContextOffsetsTable(pHunterContext))) {
         DBG_BREAK;
         goto aborted;
     }
 
-    pHunterContext->NTOS_PROCESS.NTOS_IMAGE.pImageBase = pNtosBase;
+    pHunterContext->NTOS_PROCESS.
+        NTOS_IMAGE.pImageBase = pNtosBase;
     if (HR_ERROR(PeGetImageSectionsRange(
         pNtosBase,
-        &pHunterContext->
-        NTOS_PROCESS.NTOS_IMAGE.SECTIONS_VA_RANGE.pLowVa,
-        &pHunterContext->
-        NTOS_PROCESS.NTOS_IMAGE.SECTIONS_VA_RANGE.pHighVa))) {
+        &pHunterContext->NTOS_PROCESS.
+        NTOS_IMAGE.SECTIONS_VA_RANGE.pLowVa,
+        &pHunterContext->NTOS_PROCESS.
+        NTOS_IMAGE.SECTIONS_VA_RANGE.pHighVa))) {
         DBG_BREAK;
         goto aborted;
     }
 
-    pHunterContext->NTOS_PROCESS.HR_IMAGE.pImageBase = &__ImageBase;
+    pHunterContext->NTOS_PROCESS.
+        HR_IMAGE.pImageBase = &__ImageBase;
     if (HR_ERROR(PeGetImageSectionsRange(
         &__ImageBase,
-        &pHunterContext->
-        NTOS_PROCESS.HR_IMAGE.SECTIONS_VA_RANGE.pLowVa,
-        &pHunterContext->
-        NTOS_PROCESS.HR_IMAGE.SECTIONS_VA_RANGE.pHighVa))) {
+        &pHunterContext->NTOS_PROCESS.
+        HR_IMAGE.SECTIONS_VA_RANGE.pLowVa,
+        &pHunterContext->NTOS_PROCESS.
+        HR_IMAGE.SECTIONS_VA_RANGE.pHighVa))) {
         DBG_BREAK;
         goto aborted;
     }

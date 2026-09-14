@@ -484,7 +484,7 @@ MemGetPteAddressSafe(
     }
 
     if (!(pPte = (MMPTE_HARDWARE*)GET_PML4_ENTRY_ADDRESS(
-        pHunterContext->NTOS_ITEMS.PteBases[HR_CONTEXT_PXE_BASE_IDX],
+        pHunterContext->NTOS_ITEMS.PteBase[MMU_LONG_PXE_BASE_IDX],
         pVa))->Valid) {
         pPte = NULL;
         goto success;
@@ -492,7 +492,7 @@ MemGetPteAddressSafe(
         goto success;
     }
     if (!(pPte = (MMPTE_HARDWARE*)GET_PDPT_ENTRY_ADDRESS(
-        pHunterContext->NTOS_ITEMS.PteBases[HR_CONTEXT_PPE_BASE_IDX],
+        pHunterContext->NTOS_ITEMS.PteBase[MMU_LONG_PPE_BASE_IDX],
         pVa))->Valid) {
         pPte = NULL;
         goto success;
@@ -500,7 +500,7 @@ MemGetPteAddressSafe(
         goto success;
     }
     if (!(pPte = (MMPTE_HARDWARE*)GET_PD_ENTRY_ADDRESS(
-        pHunterContext->NTOS_ITEMS.PteBases[HR_CONTEXT_PDE_BASE_IDX],
+        pHunterContext->NTOS_ITEMS.PteBase[MMU_LONG_PDE_BASE_IDX],
         pVa))->Valid) {
         pPte = NULL;
         goto success;
@@ -508,7 +508,7 @@ MemGetPteAddressSafe(
         goto success;
     }
     if (!(pPte = (MMPTE_HARDWARE*)GET_PT_ENTRY_ADDRESS(
-        pHunterContext->NTOS_ITEMS.PteBases[HR_CONTEXT_PTE_BASE_IDX],
+        pHunterContext->NTOS_ITEMS.PteBase[MMU_LONG_PTE_BASE_IDX],
         pVa))->Valid) {
         pPte = NULL;
     }
